@@ -97,8 +97,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/logo_bright.png",
+    "dark": "/images/logo_dark.png"
   },
   "navbar": {
     "links": [
@@ -125,5 +125,8 @@
       "github": "https://github.com/fastapps",
       "discord": "https://discord.gg/fastapps"
     }
-  }
+  },
+  "styles": [
+    "styles.css"
+  ]
 }

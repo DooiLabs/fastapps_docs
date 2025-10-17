@@ -1,0 +1,24 @@
+/* FastApps Logo Styling */
+.logo img,
+.logo svg,
+a[href="/"] img,
+a[href="/"] svg,
+.navbar-brand img,
+.navbar-brand svg {
+  height: 60px !important;
+  width: auto !important;
+  max-height: none !important;
+}
+
+.logo,
+a[href="/"],
+.navbar-brand {
+  height: 60px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-left: -32px !important;
+}
+
+/* Keep navbar at original height */
