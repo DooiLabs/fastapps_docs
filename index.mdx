@@ -1,11 +1,11 @@
 ---
 title: "Welcome to FastApps"
-description: "Build ChatGPT widgets with zero boilerplate - just write your logic and UI!"
+description: "The world first python framework for apps in ChatGPT."
 ---
 
 ## What is FastApps?
 
-FastApps is a **zero-boilerplate framework** for building interactive ChatGPT widgets powered by OpenAI's Apps SDK and the Model Context Protocol (MCP).
+FastApps is a **zero-boilerplate framework** for building ChatGPT apps powered by OpenAI's Apps SDK and FastMCP.
 
 <Card
   title="Quick Start"
@@ -18,7 +18,7 @@ FastApps is a **zero-boilerplate framework** for building interactive ChatGPT wi
 
 ## Why FastApps?
 
-Building widgets with the raw Apps SDK requires extensive boilerplate - protocol handlers, tool registration, resource management, and build configuration. **FastApps eliminates all of that.**
+Building with the raw Apps SDK requires extensive boilerplate - protocol handlers, tool registration, resource management, and build configuration. **FastApps eliminates all of that.**
 
 <Columns cols={2}>
   <Card
@@ -49,7 +49,7 @@ Building widgets with the raw Apps SDK requires extensive boilerplate - protocol
 
 ## Quick Example
 
-### Python Tool (Backend)
+### MCP Tool (Backend)
 ```python
 from fastapps import BaseWidget, Field, ConfigDict
 from pydantic import BaseModel
@@ -94,18 +94,11 @@ That's all you need! FastApps handles everything else automatically.
     Learn how to build interactive UI components with React.
   </Card>
   <Card
-    title="Tools"
+    title="Server"
     icon="wrench"
-    href="/tools/index"
+    href="/server/index"
   >
     Create backend logic with Python and Pydantic validation.
-  </Card>
-  <Card
-    title="State Management"
-    icon="database"
-    href="/state/index"
-  >
-    Manage widget state with built-in React hooks.
   </Card>
   <Card
     title="Authentication"
@@ -113,20 +106,6 @@ That's all you need! FastApps handles everything else automatically.
     href="/auth/index"
   >
     Secure your widgets with OAuth 2.0 providers.
-  </Card>
-  <Card
-    title="Styling"
-    icon="paintbrush"
-    href="/styling/index"
-  >
-    Style your widgets with CSS, Tailwind, or any framework.
-  </Card>
-  <Card
-    title="API Integration"
-    icon="plug"
-    href="/api-integration/index"
-  >
-    Connect to external APIs and services.
   </Card>
 </Columns>
 
@@ -157,18 +136,18 @@ With FastApps, you can create:
     Build your first widget in 5 minutes.
   </Card>
   <Card
-    title="Tutorial"
+    title="Introduction"
     icon="book-open"
-    href="/tutorial/index"
+    href="/introduction/index"
   >
-    Follow a step-by-step guide to building a complete app.
+    Learn about the framework architecture.
   </Card>
   <Card
-    title="API Reference"
+    title="Authentication"
     icon="code"
-    href="/api-reference/index"
+    href="/auth/index"
   >
-    Explore the complete API documentation.
+    Secure your widgets with OAuth 2.0.
   </Card>
 </CardGroup>
 

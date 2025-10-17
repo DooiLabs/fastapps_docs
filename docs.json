@@ -58,17 +58,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/index"
-            ]
-          }
-        ]
       }
     ],
     "global": {
@@ -94,7 +83,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:zach@dooi.ai"
+        "href": "mailto:zach@dooilabs.com"
       }
     ]
   },
