@@ -14,10 +14,15 @@
         "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "About FastApps",
             "pages": [
               "what-is-fastapps/index",
-              "introduction/index",
+              "introduction/index"
+            ]
+          },
+          {
+            "group": "Getting Started",
+            "pages": [
               "quickstart/index",
               "project-setup/index"
             ]
@@ -85,12 +90,12 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/fastapps",
+          "href": "https://github.com/DooiLabs/FastApps",
           "icon": "github"
         },
         {
           "anchor": "Community",
-          "href": "https://discord.gg/fastapps",
+          "href": "https://discord.gg/EvVNw8BH",
           "icon": "discord"
         }
       ]
@@ -122,8 +127,8 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/fastapps",
-      "discord": "https://discord.gg/fastapps"
+      "github": "https://github.com/DooiLabs/FastApps",
+      "discord": "https://discord.gg/EvVNw8BH"
     }
   },
   "styles": [
