@@ -1,13 +1,12 @@
 ---
-title: Tool Basics
-description: Learn the fundamentals of creating FastApps Python tools
+title: "Tool Basics"
+description: "Learn the fundamentals of creating mcp server tools with FastApps."
 ---
-
-Learn the fundamentals of creating Python tools that power your ChatGPT widgets.
 
 ## What is a Tool?
 
 A tool is a Python class that:
+
 - Lives in `server/tools/<widget>_tool.py`
 - Extends `BaseWidget`
 - Defines inputs with Pydantic
@@ -21,20 +20,20 @@ A tool is a Python class that:
 
 #### Required Class Attributes
 
-| Attribute | Type | Description | Example |
-|-----------|------|-------------|---------|
-| `identifier` | `str` | Unique widget identifier. Must match the widget folder name in `widgets/`. Used as the resource URI identifier | `"greeting"` for `widgets/greeting/` |
-| `title` | `str` | Human-readable tool name displayed in ChatGPT interface. Shown when the model considers calling this tool | `"Show Greeting Widget"` |
-| `input_schema` | `Type[BaseModel]` | Pydantic model defining the tool's input parameters. ChatGPT uses this JSON schema to understand when and how to call your tool | `GreetingInput` |
-| `invoking` | `str` | Short, localized status message shown to users **while** the tool is being executed. Maps to `openai/toolInvocation/invoking` | `"Preparing your greeting…"` |
-| `invoked` | `str` | Short, localized status message shown to users **after** the tool completes. Maps to `openai/toolInvocation/invoked` | `"Greeting ready!"` |
+| Attribute      | Type              | Description                                                                                                                     | Example                              |
+| -------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `identifier`   | `str`             | Unique widget identifier. Must match the widget folder name in `widgets/`. Used as the resource URI identifier                  | `"greeting"` for `widgets/greeting/` |
+| `title`        | `str`             | Human-readable tool name displayed in ChatGPT interface. Shown when the model considers calling this tool                       | `"Show Greeting Widget"`             |
+| `input_schema` | `Type[BaseModel]` | Pydantic model defining the tool's input parameters. ChatGPT uses this JSON schema to understand when and how to call your tool | `GreetingInput`                      |
+| `invoking`     | `str`             | Short, localized status message shown to users **while** the tool is being executed. Maps to `openai/toolInvocation/invoking`   | `"Preparing your greeting…"`         |
+| `invoked`      | `str`             | Short, localized status message shown to users **after** the tool completes. Maps to `openai/toolInvocation/invoked`            | `"Greeting ready!"`                  |
 
 #### Optional Class Attributes
 
-| Attribute | Type | Description | Example |
-|-----------|------|-------------|---------|
-| `description` | `str` | Optional tool description. Helps the model understand when to use this tool | `"Display a personalized greeting widget"` |
-| `widget_accessible` | `bool` | Whether the widget can initiate tool calls from its React component | `True` for interactive widgets |
+| Attribute           | Type   | Description                                                                 | Example                                    |
+| ------------------- | ------ | --------------------------------------------------------------------------- | ------------------------------------------ |
+| `description`       | `str`  | Optional tool description. Helps the model understand when to use this tool | `"Display a personalized greeting widget"` |
+| `widget_accessible` | `bool` | Whether the widget can initiate tool calls from its React component         | `True` for interactive widgets             |
 
 ### Basic Tool Structure
 

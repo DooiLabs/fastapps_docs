@@ -1,15 +1,13 @@
 ---
-title: React Hooks
-description: Complete guide to FastApps React hooks for building interactive widgets
+title: "React Hooks"
+description: "Complete guide to FastApps React hooks for managing states."
 ---
-
-Master the React hooks that power FastApps widgets.
 
 ## Core Hooks
 
 ### useWidgetProps()
 
-Access data returned from your Python tool's `execute()` method.
+Access data returned from your MCP tool's `execute()` method.
 
 ```tsx
 import { useWidgetProps } from 'fastapps';
@@ -38,8 +36,9 @@ export default function MyWidget() {
 ```
 
 **How it works:**
+
 - Maps to `window.openai.toolOutput`
-- Data comes from your Python tool's `return` statement
+- Data comes from your MCP tool's `return` statement
 - Updates automatically on new tool calls
 
 ### useWidgetState()
@@ -66,12 +65,14 @@ export default function Counter() {
 ```
 
 **How it works:**
+
 - Maps to `window.openai.widgetState` and `setWidgetState()`
 - State persists in ChatGPT's conversation context
 - Survives page refreshes and widget re-renders
 - Accepts initial state as default value
 
 **Advanced usage:**
+
 ```tsx
 // With TypeScript
 interface CounterState {
@@ -153,6 +154,7 @@ export default function ResponsiveWidget() {
 ```
 
 **Display modes:**
+
 - `inline` - Default mode, widget appears inline with the conversation
 - `pip` - Picture-in-picture mode (mobile may coerce to fullscreen)
 - `fullscreen` - Full screen takeover
@@ -182,6 +184,7 @@ export default function ScrollableWidget() {
 ```
 
 **Best practices:**
+
 - Always respect the `maxHeight` constraint
 - Use `overflow: auto` to enable scrolling
 - Consider the user's viewport size when designing layouts
@@ -190,17 +193,9 @@ export default function ScrollableWidget() {
 
 Use `useOpenAiGlobal(key)` to access:
 
-| Key | Type | Description | Example |
-|-----|------|-------------|---------|
-| `theme` | `'light' \| 'dark'` | ChatGPT's current theme | `'dark'` |
-| `displayMode` | `'inline' \| 'pip' \| 'fullscreen'` | Current display mode | `'inline'` |
-| `locale` | `string` | User's preferred locale (IETF BCP 47) | `'en-US'`, `'fr-FR'` |
-| `maxHeight` | `number` | Maximum height constraint in pixels | `600` |
-| `safeArea` | `SafeArea` | Safe area insets for mobile layouts | `{ insets: { top: 20, ... }}` |
-| `userAgent` | `UserAgent` | Device and capability information | `{ device: { type: 'mobile' }, ... }` |
-| `toolInput` | `object` | Input parameters passed to your tool | `{ city: 'NYC' }` |
-| `toolOutput` | `object` | Current tool output (same as `useWidgetProps()`) | `{ message: 'Hello' }` |
-| `widgetState` | `object` | Current persistent state (same as `useWidgetState()`) | `{ count: 5 }` |
+<table style="min-width: 100px">
+<colgroup><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>Key</p></th><th colspan="1" rowspan="1"><p>Type</p></th><th colspan="1" rowspan="1"><p>Description</p></th><th colspan="1" rowspan="1"><p>Example</p></th></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">theme</code></p></td><td colspan="1" rowspan="1"><p>`'light'</p></td><td colspan="1" rowspan="1"><p>'dark'`</p></td><td colspan="1" rowspan="1"><p>ChatGPT's current theme</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">'dark'</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">displayMode</code></p></td><td colspan="1" rowspan="1"><p>`'inline'</p></td><td colspan="1" rowspan="1"><p>'pip'</p></td><td colspan="1" rowspan="1"><p>'fullscreen'`</p></td><td colspan="1" rowspan="1"><p>Current display mode</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">'inline'</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">locale</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">string</code></p></td><td colspan="1" rowspan="1"><p>User's preferred locale (IETF BCP 47)</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">'en-US'</code>, <code spellcheck="false">'fr-FR'</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">maxHeight</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">number</code></p></td><td colspan="1" rowspan="1"><p>Maximum height constraint in pixels</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">600</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">safeArea</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">SafeArea</code></p></td><td colspan="1" rowspan="1"><p>Safe area insets for mobile layouts</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">{ insets: { top: 20, ... }}</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">userAgent</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">UserAgent</code></p></td><td colspan="1" rowspan="1"><p>Device and capability information</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">{ device: { type: 'mobile' }, ... }</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">toolInput</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">object</code></p></td><td colspan="1" rowspan="1"><p>Input parameters passed to your tool</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">{ city: 'NYC' }</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">toolOutput</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">object</code></p></td><td colspan="1" rowspan="1"><p>Current tool output (same as <code spellcheck="false">useWidgetProps()</code>)</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">{ message: 'Hello' }</code></p></td></tr><tr><td colspan="1" rowspan="1"><p><code spellcheck="false">widgetState</code></p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">object</code></p></td><td colspan="1" rowspan="1"><p>Current persistent state (same as <code spellcheck="false">useWidgetState()</code>)</p></td><td colspan="1" rowspan="1"><p><code spellcheck="false">{ count: 5 }</code></p></td></tr></tbody>
+</table>
 
 ## TypeScript Support
 
@@ -241,13 +236,6 @@ const mode: DisplayMode | null = useOpenAiGlobal('displayMode');
 const displayMode: DisplayMode | null = useDisplayMode();
 const maxHeight: number | null = useMaxHeight();
 ```
-
-**Available hooks:**
-- `useWidgetProps<T>(defaultState?)` - Access tool output with optional fallback
-- `useWidgetState<T>(defaultState)` - Persistent state management
-- `useOpenAiGlobal(key)` - Access any global property
-- `useDisplayMode()` - Get display mode (convenience)
-- `useMaxHeight()` - Get max height (convenience)
 
 ## Creating Custom Convenience Hooks
 
