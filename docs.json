@@ -36,12 +36,12 @@
             ]
           },
           {
-            "group": "Tools",
+            "group": "Server",
             "pages": [
-              "tools/index",
-              "tools/basics/index",
-              "tools/integration/index",
-              "tools/advanced/index"
+              "server/index",
+              "server/basics/index",
+              "server/integration/index",
+              "server/advanced/index"
             ]
           },
           {

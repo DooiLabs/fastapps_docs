@@ -308,43 +308,6 @@ export default function PizzaList() {
 }
 ```
 
-## Best Practices
-
-**Component Structure:**
-- Keep components pure and deterministic
-- Use inline styles for fast iteration
-- Extract shared utilities to `widgets/shared/`
-- Handle loading and empty states explicitly
-
-**State Management:**
-- Use `useWidgetState()` for data that needs to persist
-- Use local `useState()` for ephemeral UI state
-- Keep state payloads small (< 4KB recommended)
-- Don't store large datasets in widget state
-
-**Performance:**
-- Memoize expensive computations with `useMemo()`
-- Avoid unnecessary re-renders with `React.memo()`
-- Use `useCallback()` for event handlers passed to children
-- Keep component bundles small (< 100KB recommended)
-
-**Layout & Responsiveness:**
-- Always respect `maxHeight` from `useOpenAiGlobal('maxHeight')`
-- Use `safeArea` insets for mobile layouts
-- Check `userAgent.device.type` for device-specific layouts
-- Support both light and dark themes
-
-**User Experience:**
-- Provide loading states when calling tools
-- Show error messages when operations fail
-- Use `sendFollowUpMessage()` to guide conversations
-- Request fullscreen only when necessary
-
-**Security:**
-- Validate all user inputs before passing to `callTool()`
-- Never expose sensitive data in widget state
-- Use `openExternal()` for untrusted URLs
-- Follow CSP rules defined in Python tool
 
 ## Next Steps
 
