@@ -3,6 +3,8 @@ title: "What is FastApps?"
 description: "The fast, Pythonic way to build ChatGPT Apps"
 ---
 
+FastApps is the most effective and fast way to build Apps in ChatGPT, by utilizing the FastMCP framework specialized for the apps sdk.
+
 Here's a simple Hello World widget to show how easy it is:
 
 **Python Backend** (`server/tools/hello_tool.py`)
@@ -49,7 +51,7 @@ FastApps provides everything you need to build sophisticated ChatGPT apps:
 
 **Widget Registration**: Use the `BaseWidget` class to simply register it as an MCP tool. We handle the rest - no complex configuration or manual registration needed.
 
-**OpenAI Hooks**: We've transformed OpenAI's Apps SDK functions into a clean library. Simply import and use hooks like `useWidgetProps()`, `useWidgetState()`, and `useOpenAiGlobal()` without dealing with the raw SDK complexity.
+**CLI commands**: Just type `fastapps init` to set up the whole project. Use `fastapps create mywidget` to make an widget. Everything from component creation to MCP tool registeration will be set up automatically.
 
 **Simple auth**: Authentication and other advanced features are all handled with our simple decorators. Just add `@auth_required` and you're done.
 
@@ -70,7 +72,6 @@ Ready to build your first widget? Follow our step-by-step guide:
 1. **Install FastApps**: `pip install fastapps`
 2. **Create a project**: `fastapps init my-app`
 3. **Generate a widget**: `fastapps create my-widget`
-4. **Edit the two files** and start building!
 
 Check out our [Getting Started Guide](/blog/tutorials/getting-started) for a complete walkthrough, or explore our [examples gallery](/docs/examples) to see real-world applications.
 
@@ -78,11 +79,22 @@ Check out our [Getting Started Guide](/blog/tutorials/getting-started) for a com
 
 ```mermaid
 graph TD
-    A[Python Tool] -->|Returns data| B[useWidgetProps]
-    B --> C[React Component]
-    C -->|User interaction| D[useWidgetState]
-    D -->|Persists| E[ChatGPT Context]
-    C -->|Advanced features| F[window.openai API]
+    A[ChatGPT] -->|MCP Protocol| B[FastApps]
+    
+    B --> C[Python Tool]
+    C -->|execute returns data| D[React Component]
+    
+    D -->|useWidgetProps| E[Get Data]
+    D -->|useWidgetState| F[Manage State]
+    D -->|useOpenAiGlobal| G[Access ChatGPT]
+    
+    H[Auto-Discovery] -->|Finds BaseWidget| C
+    I[WidgetBuilder] -->|Builds React| D
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
 ```
 
 ## What Makes FastApps Different?
@@ -97,10 +109,10 @@ Most frameworks force you to deal with:
 FastApps eliminates all of that:
 
 - ✅ **Auto-discovery**: Widgets are automatically found and registered
-- ✅ **Two files per widget**: One Python file, one React file. That's it.
+- ✅ **Only two files per widget**: One Python file, one React file. That's it.
 - ✅ **CLI scaffolding**: Generate widgets instantly
 - ✅ **Type-safe**: Pydantic for Python, TypeScript for React
-- ✅ **Modern React**: Use hooks like `useWidgetProps()` and `useWidgetState()`
+- ✅ **Apps SDK hooks support**: Use hooks like `useWidgetProps()` and `useWidgetState()`
 
 ## Next Steps
 
