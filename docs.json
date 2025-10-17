@@ -45,14 +45,6 @@
             ]
           },
           {
-            "group": "Core Concepts",
-            "pages": [
-              "state/index",
-              "styling/index",
-              "api-integration/index"
-            ]
-          },
-          {
             "group": "Authentication",
             "pages": [
               "auth/index",
