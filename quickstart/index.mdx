@@ -1,6 +1,6 @@
 ---
-title: FastApps Quick Start
-description: Spin up your first FastApps project and run a widget in under five minutes.
+title: "FastApps Quick Start"
+description: "Spin up your first FastApps project and run a widget in under five minutes."
 ---
 
 Get your first ChatGPT widget running in 5 minutes!
@@ -34,7 +34,7 @@ fastapps create my-widget
 ```
 
 - Installs dependencies
-- Creates a Python tool in `server/tools/`
+- Creates a MCP tool in `server/tools/`
 - Generates a React widget in `widgets/`
 - Wires everything into the FastApps runtime
 
@@ -43,6 +43,7 @@ fastapps create my-widget
 You only need to edit these 2 files:
 
 ### `server/tools/my_widget_tool.py` - Backend Logic
+
 ```python
 from fastapps import BaseWidget, Field, ConfigDict
 from pydantic import BaseModel
@@ -73,6 +74,7 @@ class MyWidgetTool(BaseWidget):
 ```
 
 ### `widgets/my-widget/index.jsx` - Frontend UI
+
 ```jsx
 import React from 'react';
 import { useWidgetProps } from 'fastapps';
@@ -123,11 +125,12 @@ To test your widget in ChatGPT, you need to expose your local server to the inte
 ngrok http 8001
 ```
 
-You will get a public URL that you can use to add your local server to ChatGPT in **Settings > Connectors**.
+You will get a public URL that you can use to add your local server to ChatGPT in **Settings \> Connectors**.
 
 For example: `https://<custom_endpoint>.ngrok-free.app/mcp`
 
 **Important**: Keep both terminals running:
+
 - **Terminal 1**: `python server/main.py` (your FastApps server)
 - **Terminal 2**: `ngrok http 8001` (public tunnel)
 
