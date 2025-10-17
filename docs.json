@@ -27,12 +27,6 @@
             ]
           },
           {
-            "group": "Tutorial",
-            "pages": [
-              "tutorial/index"
-            ]
-          },
-          {
             "group": "Widgets",
             "pages": [
               "widgets/index",
