@@ -1,0 +1,67 @@
+---
+title: Managing Widget State
+description: Persist and synchronize widget state between ChatGPT sessions and user interactions.
+---
+
+Learn how to create stateful, interactive widgets that persist data across interactions.
+
+## What is Widget State?
+
+Widget state is data that:
+- Persists across widget interactions
+- Survives page refreshes
+- Is stored in ChatGPT's conversation context
+- Can be updated from your React component
+
+## Basic State Management
+
+### `useWidgetState` Hook
+
+```jsx
+import { useWidgetState } from "fastapps";
+
+export default function Counter() {
+  const [count, setCount] = useWidgetState("count", 0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+### Persist Multiple Values
+
+```jsx
+const [filters, setFilters] = useWidgetState("filters", {
+  search: "",
+  sort: "best",
+});
+```
+
+## Sync State to Python
+
+```python
+class CounterWidget(BaseWidget):
+    identifier = "counter"
+
+    async def execute(self, inputs: CounterInput, ctx: WidgetContext):
+        count = await ctx.state.get("count", default=0)
+        return {"count": count}
+```
+
+Use `ctx.state.set("count", value)` in the widget via action handlers to push updates back to Python if needed.
+
+## Resetting State
+
+- Call `resetWidgetState()` from the frontend to clear all values
+- Or use `useWidgetState(key, default, { resetOnUnmount: true })`
+
+## Tips
+
+- Keep state keys stable across renders
+- Store serializable values (objects, arrays, numbers, strings)
+- Use server-provided defaults for first render
+- Combine with API calls to cache results per conversation

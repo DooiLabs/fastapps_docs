@@ -1,0 +1,198 @@
+---
+title: Server Configuration
+description: Configure OAuth 2.1 authentication at the server level for FastApps widgets.
+---
+
+## Basic Configuration
+
+Add authentication parameters to your `WidgetMCPServer`:
+
+```python
+from fastapps import WidgetBuilder, WidgetMCPServer
+from fastapps.cli.loader import auto_load_tools
+
+# Build widgets
+builder = WidgetBuilder(PROJECT_ROOT)
+build_results = builder.build_all()
+tools = auto_load_tools(build_results)
+
+# Create server with authentication
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_required_scopes=["user"],
+)
+
+app = server.get_app()
+```
+
+## With Audience
+
+Some OAuth providers (like Auth0) require an audience claim:
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_audience="https://api.example.com",  # API identifier
+    auth_required_scopes=["user"],
+)
+```
+
+## Configuration Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `auth_issuer_url` | `str` | Yes* | OAuth issuer URL (e.g., `https://tenant.auth0.com`) |
+| `auth_resource_server_url` | `str` | Yes* | Your MCP server URL (e.g., `https://example.com/mcp`) |
+| `auth_required_scopes` | `List[str]` | No | Required OAuth scopes (e.g., `["user", "read:data"]`) |
+| `auth_audience` | `str` | No | JWT audience claim (required by some providers) |
+| `token_verifier` | `TokenVerifier` | No | Custom token verifier (uses `JWTVerifier` by default) |
+
+\* Both `auth_issuer_url` and `auth_resource_server_url` must be provided to enable authentication.
+
+---
+
+## Built-in JWT Verification
+
+FastApps includes a `JWTVerifier` that automatically validates tokens.
+
+### How It Works
+
+The built-in verifier:
+1. Discovers JWKS URI from issuer's `.well-known/openid-configuration`
+2. Validates JWT signature using public keys
+3. Verifies issuer, audience, expiration
+4. Checks required scopes
+5. Extracts user claims
+
+### Example
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_audience="https://api.example.com",
+    auth_required_scopes=["user", "read:data"],
+)
+```
+
+The server automatically:
+- Validates JWT signature
+- Verifies issuer matches `https://tenant.auth0.com`
+- Checks audience is `https://api.example.com`
+- Ensures token has `user` and `read:data` scopes
+
+---
+
+## Multiple Scopes
+
+Require multiple scopes for all widgets:
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_required_scopes=["user", "read:data", "write:data"],
+)
+```
+
+Users must have **all** specified scopes to access widgets.
+
+---
+
+## Complete Example
+
+```python
+# server/main.py
+import os
+from pathlib import Path
+from fastapps import WidgetBuilder, WidgetMCPServer
+from fastapps.cli.loader import auto_load_tools
+
+PROJECT_ROOT = Path(__file__).parent
+
+# Build all widgets
+builder = WidgetBuilder(PROJECT_ROOT)
+build_results = builder.build_all()
+tools = auto_load_tools(build_results)
+
+# Create authenticated server
+server = WidgetMCPServer(
+    name="my-secure-widgets",
+    widgets=tools,
+    # OAuth Configuration
+    auth_issuer_url=os.getenv("AUTH_ISSUER_URL"),
+    auth_resource_server_url=os.getenv("AUTH_RESOURCE_SERVER_URL"),
+    auth_audience=os.getenv("AUTH_AUDIENCE"),
+    auth_required_scopes=["user"],
+)
+
+app = server.get_app()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
+```
+
+---
+
+## Environment Variables
+
+Store OAuth configuration in environment variables:
+
+```bash
+# .env
+AUTH_ISSUER_URL=https://your-tenant.us.auth0.com
+AUTH_RESOURCE_SERVER_URL=https://yourdomain.com/mcp
+AUTH_AUDIENCE=https://api.example.com
+```
+
+Load in your server:
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url=os.getenv("AUTH_ISSUER_URL"),
+    auth_resource_server_url=os.getenv("AUTH_RESOURCE_SERVER_URL"),
+    auth_audience=os.getenv("AUTH_AUDIENCE"),
+    auth_required_scopes=["user"],
+)
+```
+
+---
+
+## Authentication Inheritance
+
+Per MCP spec: **"Missing field: inherit server default policy"**
+
+When server authentication is enabled:
+- Widgets **without decorators** inherit server auth requirements
+- Widgets can **opt-out** with `@no_auth`
+- Widgets can **add scopes** with `@auth_required(scopes=[...])`
+- Widgets can **make auth optional** with `@optional_auth`
+
+See [Widget Decorators](/docs/auth/decorators) for details.
+
+---
+
+## Next Steps
+
+- [**Widget Decorators**](/docs/auth/decorators) - Control per-widget authentication
+- [**OAuth Providers**](/docs/auth/providers) - Set up Auth0, Okta, etc.
+- [**Advanced Topics**](/docs/auth/advanced) - Custom verification
+

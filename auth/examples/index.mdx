@@ -1,0 +1,428 @@
+---
+title: Examples
+description: Real-world authentication examples for FastApps widgets.
+---
+
+## Admin Dashboard
+
+Require admin scope and display administrative data:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+from pydantic import BaseModel
+
+class AdminDashboardInput(BaseModel):
+    pass
+
+@auth_required(scopes=["admin"])
+class AdminDashboardWidget(BaseWidget):
+    identifier = "admin-dashboard"
+    title = "Admin Dashboard"
+    input_schema = AdminDashboardInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Double-check admin scope
+        if not user.has_scope("admin"):
+            return {
+                "error": "Admin access required",
+                "message": "Contact your administrator for access"
+            }
+        
+        # Fetch admin statistics
+        stats = await get_admin_stats()
+        users = await get_user_list()
+        activity = await get_recent_activity()
+        
+        return {
+            "admin": user.subject,
+            "admin_email": user.claims.get('email'),
+            "stats": stats,
+            "users": users,
+            "activity": activity,
+            "permissions": user.scopes
+        }
+```
+
+---
+
+## User Profile
+
+Display authenticated user's profile:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+from pydantic import BaseModel
+
+class UserProfileInput(BaseModel):
+    pass
+
+@auth_required(scopes=["user"])
+class UserProfileWidget(BaseWidget):
+    identifier = "user-profile"
+    title = "User Profile"
+    input_schema = UserProfileInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Get user information from token
+        user_id = user.subject
+        email = user.claims.get('email')
+        name = user.claims.get('name')
+        picture = user.claims.get('picture')
+        
+        # Fetch additional user data from database
+        user_data = await fetch_user_from_db(user_id)
+        preferences = await fetch_user_preferences(user_id)
+        
+        return {
+            "user_id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "joined_date": user_data.created_at,
+            "preferences": preferences,
+            "is_premium": user.has_scope("premium"),
+            "scopes": user.scopes
+        }
+```
+
+---
+
+## Personalized Content
+
+Show different content based on authentication status:
+
+```python
+from fastapps import BaseWidget, optional_auth, UserContext
+from pydantic import BaseModel, Field
+
+class ContentInput(BaseModel):
+    content_id: str = Field(..., description="Content ID to fetch")
+
+@optional_auth(scopes=["user"])
+class PersonalizedContentWidget(BaseWidget):
+    identifier = "personalized-content"
+    title = "Personalized Content"
+    input_schema = ContentInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Fetch base content
+        content = await fetch_content(input_data.content_id)
+        
+        if user.is_authenticated:
+            # Authenticated: full content + personalization
+            user_preferences = await get_preferences(user.subject)
+            recommendations = await get_recommendations(user.subject)
+            view_history = await get_view_history(user.subject)
+            
+            # Track view
+            await track_view(user.subject, input_data.content_id)
+            
+            return {
+                "content": content,
+                "full_access": True,
+                "preferences": user_preferences,
+                "recommendations": recommendations,
+                "history": view_history,
+                "user_id": user.subject
+            }
+        
+        # Anonymous: preview only
+        return {
+            "content": content[:500] + "...",  # Preview
+            "full_access": False,
+            "message": "Sign in for full access and personalized recommendations"
+        }
+```
+
+---
+
+## Role-Based Dashboard
+
+Show different views based on user role:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+from pydantic import BaseModel
+
+class DashboardInput(BaseModel):
+    pass
+
+@auth_required(scopes=["user"])
+class RoleBasedDashboardWidget(BaseWidget):
+    identifier = "dashboard"
+    title = "Dashboard"
+    input_schema = DashboardInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Get role from custom claims
+        role = user.claims.get('role', 'user')
+        
+        if role == 'admin':
+            return await self._admin_view(user)
+        elif role == 'manager':
+            return await self._manager_view(user)
+        else:
+            return await self._user_view(user)
+    
+    async def _admin_view(self, user: UserContext):
+        return {
+            "view": "admin",
+            "data": await get_all_data(),
+            "users": await get_all_users(),
+            "analytics": await get_full_analytics(),
+            "permissions": ["read", "write", "delete", "manage_users"]
+        }
+    
+    async def _manager_view(self, user: UserContext):
+        team_id = user.claims.get('team_id')
+        return {
+            "view": "manager",
+            "data": await get_team_data(team_id),
+            "team_members": await get_team_members(team_id),
+            "analytics": await get_team_analytics(team_id),
+            "permissions": ["read", "write", "manage_team"]
+        }
+    
+    async def _user_view(self, user: UserContext):
+        return {
+            "view": "user",
+            "data": await get_personal_data(user.subject),
+            "recent_activity": await get_user_activity(user.subject),
+            "permissions": ["read"]
+        }
+```
+
+---
+
+## Premium Content Access
+
+Freemium model with different tiers:
+
+```python
+from fastapps import BaseWidget, optional_auth, UserContext
+from pydantic import BaseModel
+
+class AnalyticsInput(BaseModel):
+    pass
+
+@optional_auth(scopes=["user"])
+class AnalyticsWidget(BaseWidget):
+    identifier = "analytics"
+    title = "Analytics Dashboard"
+    input_schema = AnalyticsInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Base analytics available to everyone
+        base_analytics = await get_public_analytics()
+        
+        if not user.is_authenticated:
+            # Free tier - public data only
+            return {
+                "tier": "free",
+                "analytics": base_analytics,
+                "features": ["basic_charts"],
+                "message": "Sign in for more features"
+            }
+        
+        # Standard tier - authenticated users
+        user_analytics = await get_user_analytics(user.subject)
+        
+        if user.has_scope("premium"):
+            # Premium tier - full features
+            advanced_analytics = await get_advanced_analytics(user.subject)
+            custom_reports = await get_custom_reports(user.subject)
+            
+            return {
+                "tier": "premium",
+                "analytics": {
+                    "base": base_analytics,
+                    "user": user_analytics,
+                    "advanced": advanced_analytics
+                },
+                "custom_reports": custom_reports,
+                "features": ["basic_charts", "advanced_charts", "export", "api_access"],
+                "user_id": user.subject
+            }
+        
+        # Standard tier
+        return {
+            "tier": "standard",
+            "analytics": {
+                "base": base_analytics,
+                "user": user_analytics
+            },
+            "features": ["basic_charts", "user_charts"],
+            "upgrade_message": "Upgrade to premium for advanced analytics",
+            "user_id": user.subject
+        }
+```
+
+---
+
+## Public Search with User History
+
+Public search that tracks history for authenticated users:
+
+```python
+from fastapps import BaseWidget, optional_auth, UserContext
+from pydantic import BaseModel, Field
+
+class SearchInput(BaseModel):
+    query: str = Field(..., description="Search query")
+
+@optional_auth(scopes=["user"])
+class PublicSearchWidget(BaseWidget):
+    identifier = "public-search"
+    title = "Search"
+    input_schema = SearchInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Perform search (available to everyone)
+        results = await search_database(input_data.query)
+        
+        if user.is_authenticated:
+            # Save search history for authenticated users
+            await save_search_history(user.subject, input_data.query)
+            
+            # Get user's search history
+            history = await get_search_history(user.subject)
+            
+            # Personalize results
+            results = await personalize_results(results, user.subject)
+            
+            return {
+                "query": input_data.query,
+                "results": results,
+                "personalized": True,
+                "history": history,
+                "user_id": user.subject
+            }
+        
+        # Anonymous search
+        return {
+            "query": input_data.query,
+            "results": results,
+            "personalized": False,
+            "message": "Sign in to save your search history"
+        }
+```
+
+---
+
+## Document Access Control
+
+Control document access by user and organization:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+from pydantic import BaseModel, Field
+
+class DocumentInput(BaseModel):
+    document_id: str = Field(..., description="Document ID to access")
+
+@auth_required(scopes=["user", "read:documents"])
+class DocumentWidget(BaseWidget):
+    identifier = "document-viewer"
+    title = "Document Viewer"
+    input_schema = DocumentInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Fetch document
+        document = await fetch_document(input_data.document_id)
+        
+        if not document:
+            return {"error": "Document not found"}
+        
+        # Check if user has access
+        user_org = user.claims.get('https://example.com/organization')
+        
+        if document.organization != user_org:
+            return {
+                "error": "Access denied",
+                "message": "This document belongs to another organization"
+            }
+        
+        # Check if user is document owner or has read permission
+        is_owner = document.owner_id == user.subject
+        has_read = user.has_scope("read:documents")
+        
+        if not (is_owner or has_read):
+            return {
+                "error": "Access denied",
+                "message": "You don't have permission to view this document"
+            }
+        
+        # Check write permission for editing
+        can_edit = is_owner or user.has_scope("write:documents")
+        can_delete = is_owner or user.has_scope("delete:documents")
+        
+        # Log access
+        await log_document_access(user.subject, input_data.document_id, "read")
+        
+        return {
+            "document": document,
+            "permissions": {
+                "read": True,
+                "edit": can_edit,
+                "delete": can_delete
+            },
+            "user_id": user.subject,
+            "is_owner": is_owner
+        }
+```
+
+---
+
+## Multi-Organization Support
+
+Support users belonging to multiple organizations:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+from pydantic import BaseModel, Field
+
+class OrgDataInput(BaseModel):
+    organization_id: str = Field(..., description="Organization ID")
+
+@auth_required(scopes=["user"])
+class OrganizationDataWidget(BaseWidget):
+    identifier = "org-data"
+    title = "Organization Data"
+    input_schema = OrgDataInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Get user's organizations from custom claim
+        user_orgs = user.claims.get('https://example.com/organizations', [])
+        
+        # Check if user belongs to requested organization
+        if input_data.organization_id not in user_orgs:
+            return {
+                "error": "Access denied",
+                "message": "You don't belong to this organization"
+            }
+        
+        # Fetch organization data
+        org_data = await fetch_org_data(input_data.organization_id)
+        
+        # Check user's role in this organization
+        org_role = await get_user_org_role(
+            user.subject,
+            input_data.organization_id
+        )
+        
+        return {
+            "organization": org_data,
+            "role": org_role,
+            "user_id": user.subject,
+            "organizations": user_orgs
+        }
+```
+
+---
+
+## Next Steps
+
+- [**Decorators**](/docs/auth/decorators) - Learn about authentication decorators
+- [**User Context**](/docs/auth/user-context) - Access user information
+- [**Advanced Topics**](/docs/auth/advanced) - Custom verification and security
+

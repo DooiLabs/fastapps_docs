@@ -1,0 +1,150 @@
+---
+title: Authentication
+description: OAuth 2.1 authentication for FastApps widgets and tools with built-in JWT verification.
+---
+
+## Overview
+
+FastApps authentication supports:
+
+- **OAuth 2.1 with PKCE** - Industry-standard authentication
+- **Built-in JWT Verification** - Automatic token validation
+- **Per-Widget Auth** - Granular control with decorators
+- **Multiple Providers** - Auth0, Okta, Azure AD, AWS Cognito
+- **User Context** - Easy access to user claims and permissions
+- **Scope Enforcement** - Server-side permission validation
+
+## Why Authentication?
+
+Use authentication to:
+
+- **Protect sensitive data** - Display user-specific information
+- **Enable write operations** - Create, update, or delete resources
+- **Control access** - Restrict features by user role or permission
+- **Multi-tenant apps** - Separate data between users or organizations
+
+---
+
+## Quick Start
+
+### 1. Install Dependencies
+
+FastApps authentication requires JWT libraries:
+
+```bash
+pip install "PyJWT>=2.8.0" "cryptography>=41.0.0"
+```
+
+### 2. Set Up OAuth Provider
+
+Use an OAuth 2.1 provider that supports:
+- Dynamic client registration
+- PKCE flow
+- JWKS for token verification
+
+**Recommended**: Auth0, Okta, Azure AD, AWS Cognito
+
+### 3. Configure Your Server
+
+Add authentication to your `WidgetMCPServer`:
+
+```python
+from fastapps import WidgetBuilder, WidgetMCPServer
+from fastapps.cli.loader import auto_load_tools
+
+# Build widgets
+builder = WidgetBuilder(PROJECT_ROOT)
+build_results = builder.build_all()
+tools = auto_load_tools(build_results)
+
+# Create server with authentication
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://your-tenant.us.auth0.com",
+    auth_resource_server_url="https://yourdomain.com/mcp",
+    auth_required_scopes=["user"],
+)
+
+app = server.get_app()
+```
+
+That's it! Your widgets are now protected with OAuth.
+
+### 4. Use Authentication in Widgets
+
+Access user information in your widgets:
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+
+@auth_required(scopes=["user"])
+class ProtectedWidget(BaseWidget):
+    identifier = "protected"
+    title = "Protected Widget"
+    input_schema = ProtectedInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Access authenticated user
+        return {
+            "user_id": user.subject,
+            "email": user.claims.get('email'),
+            "scopes": user.scopes
+        }
+```
+
+---
+
+## Authentication Guide
+
+Explore the complete authentication documentation:
+
+### [Server Configuration](/docs/auth/server-configuration)
+Learn how to configure authentication at the server level, including OAuth parameters, audience settings, and built-in JWT verification.
+
+### [Widget Decorators](/docs/auth/decorators)
+Control authentication requirements for individual widgets using `@auth_required`, `@no_auth`, and `@optional_auth` decorators.
+
+### [User Context](/docs/auth/user-context)
+Access authenticated user information, claims, and permissions through the `UserContext` API.
+
+### [OAuth Providers](/docs/auth/providers)
+Step-by-step setup guides for Auth0, Okta, Azure AD, and other OAuth 2.1 providers.
+
+### [Advanced Topics](/docs/auth/advanced)
+Custom token verification, security best practices, and advanced authentication patterns.
+
+### [Examples](/docs/auth/examples)
+Real-world authentication examples including admin dashboards, personalized content, and role-based access.
+
+### [Troubleshooting](/docs/auth/troubleshooting)
+Testing, debugging, and solutions to common authentication issues.
+
+---
+
+## How It Works
+
+FastApps uses OAuth 2.1 with PKCE (Proof Key for Code Exchange) to authenticate users:
+
+1. **ChatGPT queries** your MCP server for protected resource metadata
+2. **ChatGPT registers** itself with your authorization server
+3. **User authenticates** when first invoking a protected tool
+4. **ChatGPT obtains** an access token
+5. **Your server verifies** the token on each request
+
+All of this is handled automatically by FastApps and ChatGPT - you just configure it.
+
+---
+
+## Next Steps
+
+Ready to add authentication to your widgets?
+
+1. **[Server Configuration](/docs/auth/server-configuration)** - Configure OAuth at the server level
+2. **[Widget Decorators](/docs/auth/decorators)** - Protect specific widgets
+3. **[OAuth Providers](/docs/auth/providers)** - Set up Auth0 or other providers
+4. **[Examples](/docs/auth/examples)** - See real-world implementations
+
+---
+
+**Need help?** Check our [GitHub repository](https://github.com/fastapps-framework/fastapps) or reach out to the community.

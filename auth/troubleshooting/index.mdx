@@ -1,0 +1,387 @@
+---
+title: Troubleshooting
+description: Testing, debugging, and solutions to common authentication issues.
+---
+
+## Testing Authentication
+
+### Local Testing
+
+1. **Start your server:**
+   ```bash
+   python server/main.py
+   ```
+
+2. **Expose with ngrok:**
+   ```bash
+   ngrok http 8001
+   ```
+
+3. **Add connector in ChatGPT:**
+   - Settings → Connectors → Add Connector
+   - Use your ngrok URL: `https://xxxxx.ngrok-free.app/mcp`
+
+4. **Test authentication:**
+   - ChatGPT will prompt for authentication when accessing protected widgets
+   - Complete the OAuth flow
+   - Widget will receive authenticated user context
+
+### Debug Mode
+
+Enable debug logging to see authentication flow:
+
+```python
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_required_scopes=["user"],
+)
+```
+
+Check logs for:
+- Token extraction from Authorization header
+- JWKS discovery from issuer
+- Token validation errors
+- Scope mismatches
+
+---
+
+## Common Issues
+
+### "FastMCP auth support not available"
+
+**Problem**: Authentication dependencies not installed.
+
+**Solution**: Install required packages:
+```bash
+pip install "PyJWT>=2.8.0" "cryptography>=41.0.0"
+pip install --upgrade fastmcp
+```
+
+---
+
+### "Failed to initialize JWKS"
+
+**Problem**: Cannot discover JWKS URI from OAuth provider.
+
+**Solution**: Verify your `auth_issuer_url` is correct and accessible:
+```bash
+curl https://your-tenant.auth0.com/.well-known/openid-configuration
+```
+
+Should return valid OpenID configuration including `jwks_uri`.
+
+**Check**:
+- URL is correct
+- URL is accessible from your server
+- OAuth provider supports OpenID Connect discovery
+
+---
+
+### "Token verification failed"
+
+**Problem**: JWT token cannot be verified.
+
+**Possible causes**:
+- Token expired
+- Wrong issuer URL
+- Missing required scopes
+- Audience mismatch
+- Invalid signature
+
+**Debug**:
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Check token structure
+import jwt
+decoded = jwt.decode(token, options={"verify_signature": False})
+print(decoded)
+```
+
+**Check**:
+- Token `iss` matches `auth_issuer_url`
+- Token `aud` matches `auth_audience` (if specified)
+- Token `exp` (expiration) is in the future
+- Token has required scopes
+
+---
+
+### "401 Unauthorized" in ChatGPT
+
+**Problem**: ChatGPT shows unauthorized error.
+
+**Solution**: Check that:
+
+1. **Authorization server is accessible from internet**
+   ```bash
+   curl https://your-tenant.auth0.com/.well-known/openid-configuration
+   ```
+
+2. **Dynamic client registration is enabled**
+   - Auth0: Settings → Advanced → OAuth → OIDC Dynamic Application Registration
+
+3. **At least one login connection is enabled**
+   - Auth0: Authentication → Database or Social connections
+
+4. **`auth_resource_server_url` matches your public server URL**
+   ```python
+   # Must match the actual public URL
+   auth_resource_server_url="https://your-actual-domain.com/mcp"
+   ```
+
+---
+
+### "User is always None"
+
+**Problem**: User context is always None in widgets.
+
+**Possible causes**:
+1. Server auth not configured
+2. User not authenticated in ChatGPT
+3. Token verification failing
+
+**Solution**:
+
+```python
+@auth_required
+class MyWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        # Add debugging
+        if not user.is_authenticated:
+            logging.error("User not authenticated!")
+            return {"error": "Authentication failed"}
+        
+        logging.info(f"User authenticated: {user.subject}")
+        # ...
+```
+
+**Check**:
+- Server has `auth_issuer_url` and `auth_resource_server_url` configured
+- Widget has `@auth_required` decorator
+- User completed OAuth flow in ChatGPT
+
+---
+
+### "Missing required scopes" error
+
+**Problem**: User doesn't have required scopes.
+
+**Solution**: Assign permissions to user in OAuth provider:
+
+**Auth0**:
+1. Go to User Management → Users
+2. Select user
+3. Click Permissions tab
+4. Assign API permissions
+
+**Alternative**: Reduce required scopes:
+
+```python
+# If scope is too restrictive:
+@auth_required(scopes=["admin"])  # Very restrictive
+
+# Consider:
+@optional_auth(scopes=["user"])  # More flexible
+```
+
+---
+
+### Decorator not working
+
+**Problem**: Authentication decorator has no effect.
+
+**Possible causes**:
+1. Import error
+2. Syntax error
+3. Decorator applied incorrectly
+
+**Check**:
+
+```python
+# ✅ Correct
+from fastapps import auth_required
+
+@auth_required(scopes=["user"])
+class MyWidget(BaseWidget):
+    pass
+
+# ❌ Wrong syntax
+@auth_required["user"]  # Wrong syntax
+class MyWidget(BaseWidget):
+    pass
+
+# ❌ Wrong import
+from fastapps import auth  # Missing _required
+```
+
+---
+
+### CORS errors
+
+**Problem**: CORS errors in browser console.
+
+**Solution**: Ensure CORS is properly configured:
+
+```python
+from starlette.middleware.cors import CORSMiddleware
+
+app = server.get_app()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specific origins
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=False,
+)
+```
+
+---
+
+### Audience mismatch
+
+**Problem**: "Invalid audience" error.
+
+**Solution**: Ensure `auth_audience` matches API identifier:
+
+**Auth0**:
+1. Go to Applications → APIs
+2. Copy the **Identifier** field
+3. Use as `auth_audience`:
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_audience="https://api.example.com",  # Must match API Identifier
+)
+```
+
+---
+
+## Debugging Tips
+
+### 1. Check OpenID Configuration
+
+```bash
+curl https://your-tenant.auth0.com/.well-known/openid-configuration | jq
+```
+
+Verify:
+- `issuer` matches your `auth_issuer_url`
+- `jwks_uri` is present
+- `registration_endpoint` is present
+
+### 2. Inspect JWT Token
+
+```python
+import jwt
+
+# Decode without verification (for debugging only)
+decoded = jwt.decode(token, options={"verify_signature": False})
+
+print("Issuer:", decoded.get('iss'))
+print("Audience:", decoded.get('aud'))
+print("Subject:", decoded.get('sub'))
+print("Scopes:", decoded.get('permissions') or decoded.get('scope'))
+print("Expiration:", decoded.get('exp'))
+```
+
+### 3. Test Token Verification Manually
+
+```python
+from fastapps import JWTVerifier
+
+verifier = JWTVerifier(
+    issuer_url="https://tenant.auth0.com",
+    audience="https://api.example.com",
+    required_scopes=["user"]
+)
+
+# Test with a token
+access_token = await verifier.verify_token(your_jwt_token)
+
+if access_token:
+    print("✅ Token verified successfully")
+    print(f"Subject: {access_token.subject}")
+    print(f"Scopes: {access_token.scopes}")
+else:
+    print("❌ Token verification failed")
+```
+
+### 4. Enable Verbose Logging
+
+```python
+import logging
+
+# Set to DEBUG level
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# Enable specific loggers
+logging.getLogger('fastapps').setLevel(logging.DEBUG)
+logging.getLogger('fastmcp').setLevel(logging.DEBUG)
+```
+
+### 5. Check Server Configuration
+
+```python
+# Print server configuration
+print(f"Auth Issuer: {server.mcp._mcp_server.auth_issuer_url}")
+print(f"Resource Server: {server.mcp._mcp_server.auth_resource_server_url}")
+print(f"Required Scopes: {server.mcp._mcp_server.auth_required_scopes}")
+```
+
+---
+
+## Production Checklist
+
+Before deploying to production:
+
+- [ ] **HTTPS enabled** for `auth_resource_server_url`
+- [ ] **Environment variables** used for sensitive configuration
+- [ ] **Short-lived tokens** configured (15-60 minutes)
+- [ ] **Specific scopes** required for each operation
+- [ ] **Audience validation** enabled
+- [ ] **Logging** configured for authentication events
+- [ ] **Rate limiting** implemented (optional)
+- [ ] **User permissions** assigned in OAuth provider
+- [ ] **CORS** properly configured
+- [ ] **Error handling** implemented
+- [ ] **Token expiration** handled gracefully
+- [ ] **Monitoring** set up for auth failures
+
+---
+
+## Getting Help
+
+If you're still experiencing issues:
+
+1. **Check logs** with DEBUG level enabled
+2. **Verify OpenID configuration** is accessible
+3. **Test token verification** manually
+4. **Review OAuth provider settings**
+5. **Check GitHub Issues** for similar problems
+6. **Ask the community** on Discord
+
+---
+
+## Next Steps
+
+- [**Server Configuration**](/docs/auth/server-configuration) - Review server setup
+- [**Providers**](/docs/auth/providers) - Check OAuth provider configuration
+- [**Advanced Topics**](/docs/auth/advanced) - Custom verification and security
+

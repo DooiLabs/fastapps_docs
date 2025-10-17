@@ -1,0 +1,201 @@
+---
+title: FastApps API Reference
+description: Reference documentation for the FastApps runtime, BaseWidget class, and helper utilities.
+---
+
+Complete API documentation for the FastApps framework.
+
+## Core Classes
+
+### `BaseWidget`
+
+The base class for all FastApps widgets.
+
+```python
+from fastapps import BaseWidget
+```
+
+#### Class Attributes
+
+**`identifier: str`** (required)
+- Unique widget identifier
+- Must match the widget folder name in `widgets/`
+- Example: `"greeting"` for `widgets/greeting/`
+
+**`input_model: Type[BaseModel]`**
+- Pydantic model describing tool inputs
+- Enables validation and type hints
+
+**`name: str | None`**
+- Human-friendly label shown in dashboards
+- Defaults to `identifier` when omitted
+
+#### Methods
+
+**`execute(self, inputs, ctx)`**
+- Main entry point for your tool
+- Return serializable data consumed by the widget
+
+**`async execute`**
+- Mark as `async` when you call network services
+- FastApps awaits the coroutine automatically
+
+## `FastApps` Client
+
+```python
+from fastapps import FastApps
+
+app = FastApps()
+app.register(GreetingWidget)
+```
+
+### Methods
+
+**`register(widget_cls)`**
+- Register a widget class manually
+- Useful when auto-discovery is disabled
+
+**`discover(path)`**
+- Recursively import modules and register widgets
+- Typical usage: `discover("server.tools")`
+
+**`call(identifier, **kwargs)`**
+- Invoke a widget tool programmatically
+- Returns the JSON payload you send to the widget
+
+## Context Helpers
+
+### `WidgetContext`
+
+Provides access to:
+- `state`: persistence helpers (`get`, `set`, `delete`)
+- `logger`: structured logging for observability
+- `settings`: runtime configuration (API keys, env flags)
+
+### State Helpers
+
+```python
+await ctx.state.get("count", default=0)
+await ctx.state.set("count", 1)
+await ctx.state.clear()
+```
+
+## Error Handling
+
+- Raise domain-specific exceptions; FastApps serializes the message
+- Use `ctx.logger.exception` to capture stack traces
+- Return fallback data so widgets can render graceful errors
+
+## React Hooks API
+
+### Core Hooks
+
+**`useWidgetProps<T>(defaultState?)`**
+- Access tool output data from Python backend
+- Optionally provide fallback/default state
+- Maps to `window.openai.toolOutput`
+- Reactively updates when tool is called again
+
+```tsx
+import { useWidgetProps } from 'fastapps';
+
+const props = useWidgetProps({ message: 'Loading...' });
+```
+
+**`useWidgetState<T>(defaultState)`**
+- Persistent state management across sessions
+- Maps to `window.openai.widgetState` and `setWidgetState()`
+- Similar API to React's `useState`
+- State visible to ChatGPT model
+
+```tsx
+import { useWidgetState } from 'fastapps';
+
+const [state, setState] = useWidgetState({ count: 0 });
+```
+
+**`useOpenAiGlobal(key)`**
+- Base hook for accessing any ChatGPT global property
+- Returns typed value or `null` if not available
+- Subscribes to changes automatically
+
+```tsx
+import { useOpenAiGlobal } from 'fastapps';
+
+const theme = useOpenAiGlobal('theme');
+const locale = useOpenAiGlobal('locale');
+```
+
+### Convenience Hooks
+
+**`useDisplayMode()`**
+- Get current display mode: `"inline"`, `"pip"`, or `"fullscreen"`
+- Equivalent to `useOpenAiGlobal('displayMode')`
+
+```tsx
+import { useDisplayMode } from 'fastapps';
+
+const displayMode = useDisplayMode();
+```
+
+**`useMaxHeight()`**
+- Get maximum height constraint in pixels
+- Equivalent to `useOpenAiGlobal('maxHeight')`
+- Always respect this constraint in your layout
+
+```tsx
+import { useMaxHeight } from 'fastapps';
+
+const maxHeight = useMaxHeight();
+```
+
+### Available Globals
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `theme` | `'light' \| 'dark'` | Current theme |
+| `displayMode` | `'inline' \| 'pip' \| 'fullscreen'` | Display mode |
+| `locale` | `string` | User's locale (IETF BCP 47) |
+| `maxHeight` | `number` | Maximum height in pixels |
+| `safeArea` | `SafeArea` | Safe area insets |
+| `userAgent` | `UserAgent` | Device info |
+| `toolInput` | `object` | Tool input parameters |
+| `toolOutput` | `object` | Tool output data |
+| `toolResponseMetadata` | `object` | Response metadata |
+| `widgetState` | `object` | Current widget state |
+
+### Direct API Access
+
+**`window.openai.callTool(name, args)`**
+- Call MCP tools from your component
+- Requires `widget_accessible = True` in Python tool
+
+**`window.openai.sendFollowUpMessage({ prompt })`**
+- Insert messages into the ChatGPT conversation
+
+**`window.openai.requestDisplayMode({ mode })`**
+- Request display mode change (inline/pip/fullscreen)
+- Host may reject or coerce the request
+
+**`window.openai.openExternal({ href })`**
+- Open external URLs in new window/tab
+
+## CLI Commands
+
+```bash
+fastapps create <name>   # Scaffold a new widget
+fastapps dev             # Run dev server with hot reload
+fastapps build           # Bundle widget assets
+```
+
+- `fastapps deploy` integrates with Flick to publish widgets
+- Pass `--python` or `--node` to customize runtimes
+
+## Version Compatibility
+
+- FastApps Python SDK targets Python 3.9+
+- React widgets are built with React 18
+- React hooks package (`fastapps@1.1.0`) provides the widget bridge
+- Hooks align with OpenAI Apps SDK official examples
+
+Leverage these APIs to integrate FastApps deeply into your workflows.

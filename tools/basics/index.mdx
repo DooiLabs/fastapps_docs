@@ -1,0 +1,200 @@
+---
+title: Tool Basics
+description: Learn the fundamentals of creating FastApps Python tools
+---
+
+Learn the fundamentals of creating Python tools that power your ChatGPT widgets.
+
+## What is a Tool?
+
+A tool is a Python class that:
+- Lives in `server/tools/<widget>_tool.py`
+- Extends `BaseWidget`
+- Defines inputs with Pydantic
+- Implements widget logic in `execute()`
+
+## Core Concepts
+
+### BaseWidget
+
+`BaseWidget` is the **abstract base class** that all FastApps widgets must inherit from. It handles all the MCP (Model Context Protocol) wiring and widget lifecycle management automatically.
+
+#### Required Class Attributes
+
+| Attribute | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `identifier` | `str` | Unique widget identifier. Must match the widget folder name in `widgets/`. Used as the resource URI identifier | `"greeting"` for `widgets/greeting/` |
+| `title` | `str` | Human-readable tool name displayed in ChatGPT interface. Shown when the model considers calling this tool | `"Show Greeting Widget"` |
+| `input_schema` | `Type[BaseModel]` | Pydantic model defining the tool's input parameters. ChatGPT uses this JSON schema to understand when and how to call your tool | `GreetingInput` |
+| `invoking` | `str` | Short, localized status message shown to users **while** the tool is being executed. Maps to `openai/toolInvocation/invoking` | `"Preparing your greeting…"` |
+| `invoked` | `str` | Short, localized status message shown to users **after** the tool completes. Maps to `openai/toolInvocation/invoked` | `"Greeting ready!"` |
+
+#### Optional Class Attributes
+
+| Attribute | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `description` | `str` | Optional tool description. Helps the model understand when to use this tool | `"Display a personalized greeting widget"` |
+| `widget_accessible` | `bool` | Whether the widget can initiate tool calls from its React component | `True` for interactive widgets |
+
+### Basic Tool Structure
+
+```python
+from fastapps import BaseWidget
+from pydantic import BaseModel
+
+class GreetingInput(BaseModel):
+    name: str
+    message: str
+
+class GreetingWidget(BaseWidget):
+    identifier = "greeting"
+    title = "Show Greeting Widget"
+    input_schema = GreetingInput
+    invoking = "Preparing your greeting…"
+    invoked = "Greeting ready!"
+
+    def execute(self, inputs: GreetingInput, ctx):
+        return {
+            "name": inputs.name,
+            "message": inputs.message,
+            "timestamp": datetime.now().isoformat()
+        }
+```
+
+## Common Patterns
+
+### Simple Data Display
+
+```python
+class WeatherWidget(BaseWidget):
+    identifier = "weather"
+    title = "Show Weather Forecast"
+    input_schema = WeatherInput
+    invoking = "Fetching weather data…"
+    invoked = "Weather forecast ready!"
+
+    def execute(self, inputs: WeatherInput, ctx):
+        # Your business logic here
+        forecast = get_weather_forecast(inputs.city)
+        
+        return {
+            "city": inputs.city,
+            "temperature": forecast.temperature,
+            "description": forecast.description,
+            "humidity": forecast.humidity
+        }
+```
+
+### User Input Collection
+
+```python
+class SurveyInput(BaseModel):
+    questions: List[str]
+
+class SurveyWidget(BaseWidget):
+    identifier = "survey"
+    title = "Create Survey Widget"
+    input_schema = SurveyInput
+    invoking = "Setting up your survey…"
+    invoked = "Survey ready for responses!"
+
+    def execute(self, inputs: SurveyInput, ctx):
+        return {
+            "questions": inputs.questions,
+            "survey_id": generate_survey_id(),
+            "created_at": datetime.now().isoformat()
+        }
+```
+
+### Conditional Logic
+
+```python
+class ConditionalWidget(BaseWidget):
+    identifier = "conditional"
+    title = "Show Conditional Content"
+    input_schema = ConditionalInput
+    invoking = "Processing your request…"
+    invoked = "Content ready!"
+
+    def execute(self, inputs: ConditionalInput, ctx):
+        if inputs.user_type == "admin":
+            return {
+                "content": "Admin dashboard",
+                "permissions": ["read", "write", "delete"],
+                "admin_panel": True
+            }
+        else:
+            return {
+                "content": "User dashboard",
+                "permissions": ["read"],
+                "admin_panel": False
+            }
+```
+
+## Input Validation
+
+Use Pydantic models to define and validate inputs:
+
+```python
+from pydantic import BaseModel, Field, validator
+from typing import List, Optional
+
+class ProductSearchInput(BaseModel):
+    query: str = Field(..., min_length=1, max_length=100)
+    category: Optional[str] = None
+    price_range: Optional[tuple] = Field(None, description="Min and max price")
+    limit: int = Field(default=10, ge=1, le=100)
+    
+    @validator('query')
+    def validate_query(cls, v):
+        if len(v.strip()) == 0:
+            raise ValueError('Query cannot be empty')
+        return v.strip()
+    
+    @validator('price_range')
+    def validate_price_range(cls, v):
+        if v and v[0] > v[1]:
+            raise ValueError('Min price must be less than max price')
+        return v
+```
+
+## Error Handling
+
+Handle errors gracefully and provide meaningful feedback:
+
+```python
+class RobustWidget(BaseWidget):
+    identifier = "robust"
+    title = "Robust Widget Example"
+    input_schema = RobustInput
+    invoking = "Processing…"
+    invoked = "Done!"
+
+    def execute(self, inputs: RobustInput, ctx):
+        try:
+            # Your business logic
+            result = risky_operation(inputs.data)
+            return {"status": "success", "data": result}
+            
+        except ValidationError as e:
+            ctx.logger.warning(f"Validation error: {e}")
+            return {
+                "status": "error",
+                "message": "Invalid input data",
+                "details": str(e)
+            }
+            
+        except Exception as e:
+            ctx.logger.exception(f"Unexpected error: {e}")
+            return {
+                "status": "error", 
+                "message": "Something went wrong",
+                "fallback_data": get_fallback_data()
+            }
+```
+
+## Next Steps
+
+- [**Advanced Patterns**](/docs/tools/advanced) - Learn advanced tool patterns
+- [**API Integration**](/docs/tools/integration) - Connect to external APIs
+- [**Back to Tools Overview**](/docs/tools)

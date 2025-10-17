@@ -1,68 +1,81 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "FastApps Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#4A90E2",
+    "light": "#6FB1FF",
+    "dark": "#2563EB"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/icon.png",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "what-is-fastapps/index",
+              "introduction/index",
+              "quickstart/index",
+              "project-setup/index"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Tutorial",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "tutorial/index"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Widgets",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "widgets/index",
+              "widgets/basics/index",
+              "widgets/react-hooks/index",
+              "widgets/advanced-patterns/index"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Tools",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "tools/index",
+              "tools/basics/index",
+              "tools/integration/index",
+              "tools/advanced/index"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "state/index",
+              "styling/index",
+              "api-integration/index"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": [
+              "auth/index",
+              "auth/server-configuration/index",
+              "auth/decorators/index",
+              "auth/providers/index",
+              "auth/user-context/index",
+              "auth/examples/index",
+              "auth/advanced/index",
+              "auth/troubleshooting/index"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "API Documentation",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/index"
             ]
           }
         ]
@@ -71,14 +84,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "GitHub",
+          "href": "https://github.com/fastapps",
+          "icon": "github"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Community",
+          "href": "https://discord.gg/fastapps",
+          "icon": "discord"
         }
       ]
     }
@@ -91,32 +104,26 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@fastapps.dev"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    ]
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/fastapps",
+      "discord": "https://discord.gg/fastapps"
     }
   }
 }

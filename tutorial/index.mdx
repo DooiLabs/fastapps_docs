@@ -1,0 +1,149 @@
+---
+title: FastApps Widget Tutorial
+description: Build a complete FastApps widget step by step, from Python tool to React component.
+---
+
+Learn to build ChatGPT widgets step by step.
+
+## Tutorial 1: Hello World
+
+### Goal
+Create a simple greeting widget that displays a personalized message.
+
+### Python Tool
+
+Create `server/tools/greeting_tool.py`:
+
+```python
+from fastapps import BaseWidget, Field, ConfigDict
+from pydantic import BaseModel
+from typing import Dict, Any
+
+class GreetingInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    name: str = Field(..., description="Person to greet")
+
+class GreetingWidget(BaseWidget):
+    identifier = "greeting"
+    input_model = GreetingInput
+
+    def execute(self, inputs: GreetingInput) -> Dict[str, Any]:
+        return {"message": f"Hello {inputs.name}!"}
+```
+
+### React Widget
+
+Create `widgets/greeting/index.jsx`:
+
+```jsx
+import React from "react";
+import { useWidgetProps } from "fastapps";
+
+export default function GreetingWidget() {
+  const props = useWidgetProps();
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h2>Hello Widget</h2>
+      <p>{props.message}</p>
+    </div>
+  );
+}
+```
+
+### Run It
+
+```bash
+fastapps dev
+```
+
+- Auto-discovers the widget
+- Hot reloads changes
+- Launches the widget in ChatGPT preview
+
+## Tutorial 2: Pizza List
+
+### Goal
+Display dynamic pizza data fetched from a Python tool.
+
+### Python Tool
+
+```python
+from fastapps import BaseWidget, Field
+from pydantic import BaseModel
+from typing import Dict, Any, List
+
+class PizzaInput(BaseModel):
+    city: str = Field(..., description="City to search")
+
+class PizzaWidget(BaseWidget):
+    identifier = "pizza_list"
+    input_model = PizzaInput
+
+    def execute(self, inputs: PizzaInput) -> Dict[str, Any]:
+        pizzas: List[Dict[str, str]] = fetch_pizzas(inputs.city)
+        return {"city": inputs.city, "pizzas": pizzas}
+```
+
+### React Widget
+
+```jsx
+import React from "react";
+import { useWidgetProps } from "fastapps";
+
+export default function PizzaList() {
+  const { city, pizzas } = useWidgetProps();
+
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h2>Pizza in {city}</h2>
+      <ul>
+        {pizzas.map((pizza) => (
+          <li key={pizza.name}>
+            <strong>{pizza.name}</strong> — {pizza.style}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### State Updates
+
+Add a search box with widget state:
+
+```jsx
+import { useWidgetProps, useWidgetState } from "fastapps";
+
+export default function PizzaList() {
+  const { city, pizzas } = useWidgetProps();
+  const [query, setQuery] = useWidgetState("query", "");
+
+  const filtered = pizzas.filter((pizza) =>
+    pizza.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <div style={{ padding: "1rem" }}>
+      <input
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Filter pizzas"
+      />
+      <ul>
+        {filtered.map((pizza) => (
+          <li key={pizza.name}>{pizza.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+## Tutorial 3: Deploy
+
+1. `fastapps build` to produce production assets
+2. Deploy Python backend to your platform of choice
+3. Serve the widget bundle to ChatGPT
+
+You're now ready to build full-featured widgets with FastApps.

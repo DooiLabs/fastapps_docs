@@ -1,0 +1,352 @@
+---
+title: Advanced Patterns
+description: Advanced widget patterns and direct window.openai API usage
+---
+
+Learn advanced patterns for building sophisticated widgets.
+
+## Direct window.openai API
+
+For advanced use cases, access the raw `window.openai` API directly:
+
+### Call Tools from Your Component
+
+Trigger server-side tool calls from your component (requires `widget_accessible=True` in Python):
+
+```tsx
+export default function RefreshableWidget() {
+  const props = useWidgetProps();
+  const [loading, setLoading] = React.useState(false);
+  
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      await window.openai.callTool('refresh_data', {
+        city: props.city
+      });
+      // Component will automatically re-render with new data
+    } catch (error) {
+      console.error('Failed to refresh:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div>
+      <button onClick={handleRefresh} disabled={loading}>
+        {loading ? 'Refreshing...' : 'Refresh Data'}
+      </button>
+      <div>{props.data}</div>
+    </div>
+  );
+}
+```
+
+**Important:** Set `widget_accessible = True` in your Python tool:
+```python
+class RefreshableWidget(BaseWidget):
+    widget_accessible = True  # Enable component-initiated calls
+```
+
+### Send Follow-up Messages
+
+Inject messages into the ChatGPT conversation:
+
+```tsx
+export default function InteractiveWidget() {
+  const props = useWidgetProps();
+  
+  const handleAskMore = async (item) => {
+    await window.openai.sendFollowUpMessage({
+      prompt: `Tell me more about ${item.name}`
+    });
+  };
+  
+  return (
+    <div>
+      {props.items.map((item) => (
+        <div key={item.id}>
+          <h3>{item.name}</h3>
+          <button onClick={() => handleAskMore(item)}>
+            Ask ChatGPT about this
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Request Display Mode Changes
+
+Switch between inline, picture-in-picture, and fullscreen:
+
+```tsx
+export default function ExpandableWidget() {
+  const displayMode = useOpenAiGlobal('displayMode');
+  
+  const goFullscreen = async () => {
+    const result = await window.openai.requestDisplayMode({
+      mode: 'fullscreen'
+    });
+    console.log('Granted mode:', result.mode);
+    // Note: Host may reject or coerce the request
+    // On mobile, PiP is always coerced to fullscreen
+  };
+  
+  const goInline = async () => {
+    await window.openai.requestDisplayMode({
+      mode: 'inline'
+    });
+  };
+  
+  return (
+    <div>
+      <p>Current mode: {displayMode}</p>
+      {displayMode !== 'fullscreen' && (
+        <button onClick={goFullscreen}>
+          Expand to Fullscreen
+        </button>
+      )}
+      {displayMode === 'fullscreen' && (
+        <button onClick={goInline}>
+          Back to Inline
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+### Open External Links
+
+Open URLs in a new window or redirect:
+
+```tsx
+export default function LinkWidget() {
+  const props = useWidgetProps();
+  
+  const openLink = (url: string) => {
+    window.openai.openExternal({ href: url });
+  };
+  
+  return (
+    <div>
+      {props.links.map((link) => (
+        <button key={link.url} onClick={() => openLink(link.url)}>
+          Visit {link.title}
+        </button>
+      ))}
+    </div>
+  );
+}
+```
+
+## Complete Example: Advanced Widget
+
+Here's a comprehensive example using all features:
+
+```tsx
+import React from 'react';
+import { 
+  useWidgetProps, 
+  useWidgetState, 
+  useOpenAiGlobal,
+  useDisplayMode,
+  useMaxHeight 
+} from 'fastapps';
+
+interface Place {
+  id: string;
+  name: string;
+  rating: number;
+  url: string;
+}
+
+interface PizzaListProps {
+  places: Place[];
+  city: string;
+}
+
+interface PizzaListState {
+  favorites: string[];
+  lastVisited: string | null;
+}
+
+export default function PizzaList() {
+  // Get data from Python tool
+  const props = useWidgetProps<PizzaListProps>();
+  
+  // Manage persistent state
+  const [state, setState] = useWidgetState<PizzaListState>({
+    favorites: [],
+    lastVisited: null
+  });
+  
+  // Access ChatGPT globals - using convenience hooks
+  const theme = useOpenAiGlobal('theme');
+  const displayMode = useDisplayMode();
+  const maxHeight = useMaxHeight();
+  const locale = useOpenAiGlobal('locale');
+  
+  // Toggle favorite
+  const toggleFavorite = (placeId: string) => {
+    const favorites = state.favorites.includes(placeId)
+      ? state.favorites.filter(id => id !== placeId)
+      : [...state.favorites, placeId];
+    
+    setState({ ...state, favorites });
+  };
+  
+  // Refresh data from server
+  const handleRefresh = async () => {
+    await window.openai.callTool('refresh_pizza_list', {
+      city: props.city
+    });
+  };
+  
+  // Ask follow-up about a place
+  const askAboutPlace = async (place: Place) => {
+    await window.openai.sendFollowUpMessage({
+      prompt: `Tell me more about ${place.name}`
+    });
+  };
+  
+  // Open place website
+  const visitPlace = (place: Place) => {
+    setState({ ...state, lastVisited: place.id });
+    window.openai.openExternal({ href: place.url });
+  };
+  
+  // Request fullscreen for better view
+  const expandView = async () => {
+    await window.openai.requestDisplayMode({ mode: 'fullscreen' });
+  };
+  
+  return (
+    <div style={{
+      background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
+      color: theme === 'dark' ? '#ffffff' : '#000000',
+      padding: '16px',
+      fontFamily: 'system-ui, sans-serif',
+      maxHeight: `${maxHeight}px`,
+      overflow: 'auto'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>🍕 Pizza in {props.city}</h2>
+        <div>
+          <button onClick={handleRefresh} style={{ marginRight: '8px' }}>
+            🔄 Refresh
+          </button>
+          {displayMode !== 'fullscreen' && (
+            <button onClick={expandView}>
+              ⛶ Expand
+            </button>
+          )}
+        </div>
+      </div>
+      
+      <p style={{ fontSize: '12px', opacity: 0.7 }}>
+        Locale: {locale} | Mode: {displayMode} | Favorites: {state.favorites.length}
+      </p>
+      
+      <div style={{ display: 'grid', gap: '12px', marginTop: '16px' }}>
+        {props.places.map((place) => {
+          const isFavorite = state.favorites.includes(place.id);
+          const wasVisited = state.lastVisited === place.id;
+          
+          return (
+            <div key={place.id} style={{
+              padding: '12px',
+              border: `1px solid ${theme === 'dark' ? '#333' : '#ddd'}`,
+              borderRadius: '8px',
+              background: wasVisited 
+                ? (theme === 'dark' ? '#2a2a2a' : '#f0f0f0')
+                : 'transparent'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h3 style={{ margin: 0 }}>{place.name}</h3>
+                <button 
+                  onClick={() => toggleFavorite(place.id)}
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none',
+                    fontSize: '20px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {isFavorite ? '❤️' : '🤍'}
+                </button>
+              </div>
+              
+              <p style={{ margin: '8px 0' }}>
+                ⭐ {place.rating.toFixed(1)}
+                {wasVisited && ' • Recently visited'}
+              </p>
+              
+              <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                <button onClick={() => visitPlace(place)}>
+                  Visit Website
+                </button>
+                <button onClick={() => askAboutPlace(place)}>
+                  Ask ChatGPT
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {state.favorites.length > 0 && (
+        <div style={{ marginTop: '16px', padding: '12px', background: theme === 'dark' ? '#2a2a2a' : '#f0f0f0', borderRadius: '8px' }}>
+          <p><strong>Your Favorites:</strong> {state.favorites.length} places</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+**Component Structure:**
+- Keep components pure and deterministic
+- Use inline styles for fast iteration
+- Extract shared utilities to `widgets/shared/`
+- Handle loading and empty states explicitly
+
+**State Management:**
+- Use `useWidgetState()` for data that needs to persist
+- Use local `useState()` for ephemeral UI state
+- Keep state payloads small (< 4KB recommended)
+- Don't store large datasets in widget state
+
+**Performance:**
+- Memoize expensive computations with `useMemo()`
+- Avoid unnecessary re-renders with `React.memo()`
+- Use `useCallback()` for event handlers passed to children
+- Keep component bundles small (< 100KB recommended)
+
+**Layout & Responsiveness:**
+- Always respect `maxHeight` from `useOpenAiGlobal('maxHeight')`
+- Use `safeArea` insets for mobile layouts
+- Check `userAgent.device.type` for device-specific layouts
+- Support both light and dark themes
+
+**User Experience:**
+- Provide loading states when calling tools
+- Show error messages when operations fail
+- Use `sendFollowUpMessage()` to guide conversations
+- Request fullscreen only when necessary
+
+**Security:**
+- Validate all user inputs before passing to `callTool()`
+- Never expose sensitive data in widget state
+- Use `openExternal()` for untrusted URLs
+- Follow CSP rules defined in Python tool
+
+## Next Steps
+
+- [Back to React Hooks →](/docs/widgets/react-hooks)
+- [Back to Widget Basics →](/docs/widgets/basics)

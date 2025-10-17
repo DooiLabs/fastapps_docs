@@ -1,0 +1,68 @@
+---
+title: Complete Project Setup
+description: Assemble the recommended FastApps project structure and required configuration files.
+---
+
+This guide shows you exactly what files you need to create for a new FastApps project.
+
+## 📁 Initial Project Structure
+
+```bash
+my-chatgpt-widgets/
+├── server/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── tools/
+│   │   └── __init__.py
+│   └── api/                # (optional)
+│       └── __init__.py
+│
+├── widgets/                # (empty initially)
+│
+├── requirements.txt
+└── package.json
+```
+
+## 🔧 Required Files
+
+### `server/main.py`
+
+```python
+from fastapps import FastApps, discover_tools
+
+app = FastApps()
+
+discover_tools(app, "server.tools")
+
+if __name__ == "__main__":
+    app.run()
+```
+
+### `server/tools/__init__.py`
+
+```python
+# Ensures tools package imports correctly
+```
+
+### `widgets/__init__.py`
+
+Not required — widgets are pure frontend code.
+
+## 🪄 Auto-Discovery
+
+- FastApps scans `server/tools` for subclasses of `BaseWidget`
+- The widget identifier must match the folder name in `widgets/`
+- React components live in `widgets/<identifier>/index.jsx`
+
+## 🗂 Recommended Extras
+
+- `server/api/` for shared API clients
+- `flick.config.json` if you integrate with the Flick CLI
+- `.env` for secrets used by your tools
+
+## ✅ Checklist
+
+- [ ] Create the folder structure
+- [ ] Implement at least one tool and widget
+- [ ] Run `fastapps dev`
+- [ ] Confirm the widget renders in ChatGPT

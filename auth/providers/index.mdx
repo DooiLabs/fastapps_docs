@@ -1,0 +1,297 @@
+---
+title: OAuth Providers
+description: Set up Auth0, Okta, Azure AD, and other OAuth 2.1 providers for FastApps authentication.
+---
+
+## Recommended Providers
+
+- **Auth0** - Easy setup, excellent documentation
+- **Okta** - Enterprise-grade security
+- **Azure AD** - Microsoft ecosystem integration
+- **AWS Cognito** - AWS cloud integration
+
+---
+
+## Auth0 Setup
+
+Auth0 is a popular OAuth provider with excellent ChatGPT integration.
+
+### Step 1: Create an API
+
+1. Go to **Auth0 Dashboard → Applications → APIs**
+2. Click **"Create API"**
+3. Enter:
+   - **Name**: My FastApps API
+   - **Identifier**: `https://api.example.com` (use your domain)
+   - **Signing Algorithm**: RS256
+4. Click **"Create"**
+5. Record the **Identifier** - you'll use this as `auth_audience`
+
+### Step 2: Enable RBAC
+
+1. In your API → **Settings → RBAC Settings**:
+   - ✅ Enable RBAC
+   - ✅ Add Permissions in the Access Token
+2. Go to the **Permissions** tab
+3. Add permissions (scopes):
+   - `user` - Basic user access
+   - `read:data` - Read user data
+   - `write:data` - Modify user data
+   - `admin` - Administrative access
+4. Click **"Save"**
+
+### Step 3: Enable Dynamic Registration
+
+1. Go to **Settings → Advanced → OAuth**
+2. Toggle on **"OIDC Dynamic Application Registration"**
+3. **Save Changes**
+
+### Step 4: Enable Login Methods
+
+1. Go to **Authentication → Database**
+2. Ensure at least one connection is enabled:
+   - Username-Password
+   - Google
+   - GitHub
+   - Other social providers
+
+### Step 5: Configure FastApps
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://your-tenant.us.auth0.com",  # Your Auth0 domain
+    auth_resource_server_url="https://yourdomain.com/mcp",  # Your server URL
+    auth_audience="https://api.example.com",  # API identifier from Step 1
+    auth_required_scopes=["user"],
+)
+```
+
+### Step 6: Assign Permissions to Users
+
+1. Go to **User Management → Users**
+2. Select a user
+3. Click **Permissions** tab
+4. Click **"Assign Permissions"**
+5. Select your API
+6. Choose permissions to assign
+7. Click **"Add Permissions"**
+
+### Test Configuration
+
+```bash
+# Check OpenID configuration
+curl https://your-tenant.us.auth0.com/.well-known/openid-configuration
+
+# Should return JWKS URI and other OAuth endpoints
+```
+
+---
+
+## Okta Setup
+
+Okta provides enterprise OAuth 2.1 authentication.
+
+### Step 1: Create Authorization Server
+
+1. Go to **Security → API → Authorization Servers**
+2. Use the default server or create a new one
+3. Record the **Issuer URI** (e.g., `https://dev-12345.okta.com/oauth2/default`)
+
+### Step 2: Create Scopes
+
+1. In your authorization server → **Scopes**
+2. Add custom scopes:
+   - `user` - User access
+   - `read:data` - Read permissions
+   - `write:data` - Write permissions
+   - `admin` - Admin access
+
+### Step 3: Enable Dynamic Client Registration
+
+1. Go to **Security → API → Trusted Origins**
+2. Add your server's origin
+3. Select:
+   - ✅ CORS
+   - ✅ Redirect
+
+### Step 4: Configure FastApps
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://dev-12345.okta.com/oauth2/default",
+    auth_resource_server_url="https://yourdomain.com/mcp",
+    auth_required_scopes=["user"],
+)
+```
+
+---
+
+## Azure AD Setup
+
+Use Azure Active Directory for Microsoft ecosystem integration.
+
+### Step 1: Register Application
+
+1. Go to **Azure Portal → Azure Active Directory → App registrations**
+2. Click **"New registration"**
+3. Enter:
+   - **Name**: My FastApps
+   - **Supported account types**: Choose appropriate option
+   - **Redirect URI**: Leave blank (ChatGPT handles this)
+4. Click **"Register"**
+
+### Step 2: Configure API
+
+1. In your app → **Expose an API**
+2. Click **"Add a scope"**
+3. Add scopes:
+   - `user`
+   - `read:data`
+   - `write:data`
+
+### Step 3: Get Configuration
+
+1. In **Overview**, copy:
+   - **Application (client) ID**
+   - **Directory (tenant) ID**
+2. Your issuer URL: `https://login.microsoftonline.com/{tenant-id}/v2.0`
+
+### Step 4: Configure FastApps
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://login.microsoftonline.com/{tenant-id}/v2.0",
+    auth_resource_server_url="https://yourdomain.com/mcp",
+    auth_audience="api://{client-id}",
+    auth_required_scopes=["user"],
+)
+```
+
+---
+
+## AWS Cognito Setup
+
+Use AWS Cognito for AWS ecosystem integration.
+
+### Step 1: Create User Pool
+
+1. Go to **AWS Console → Cognito → User Pools**
+2. Click **"Create user pool"**
+3. Follow the wizard to create your pool
+4. Record the **User Pool ID** and **Region**
+
+### Step 2: Create App Client
+
+1. In your user pool → **App integration → App clients**
+2. Click **"Create app client"**
+3. Configure:
+   - **App type**: Public client
+   - **Authentication flows**: ALLOW_USER_SRP_AUTH
+4. Record the **App client ID**
+
+### Step 3: Configure Domain
+
+1. Go to **App integration → Domain**
+2. Create a custom domain or use Cognito domain
+3. Record your domain
+
+### Step 4: Configure FastApps
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://cognito-idp.{region}.amazonaws.com/{user-pool-id}",
+    auth_resource_server_url="https://yourdomain.com/mcp",
+    auth_audience="{app-client-id}",
+    auth_required_scopes=["user"],
+)
+```
+
+---
+
+## Custom OAuth Provider
+
+Any OAuth 2.1 provider that supports the following will work:
+
+### Requirements
+
+- **Dynamic Client Registration** - OAuth 2.0 Dynamic Client Registration Protocol
+- **PKCE Flow** - Proof Key for Code Exchange
+- **JWKS** - JSON Web Key Set for token verification
+- **OpenID Configuration** - `.well-known/openid-configuration` endpoint
+
+### Configuration
+
+```python
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://your-oauth-provider.com",
+    auth_resource_server_url="https://yourdomain.com/mcp",
+    auth_audience="your-api-identifier",  # If required
+    auth_required_scopes=["user"],
+)
+```
+
+### Verify OpenID Configuration
+
+```bash
+curl https://your-oauth-provider.com/.well-known/openid-configuration
+```
+
+Should return:
+```json
+{
+  "issuer": "https://your-oauth-provider.com",
+  "authorization_endpoint": "...",
+  "token_endpoint": "...",
+  "jwks_uri": "...",
+  "registration_endpoint": "...",
+  ...
+}
+```
+
+---
+
+## Environment Variables
+
+Store provider configuration securely:
+
+```bash
+# .env
+AUTH_ISSUER_URL=https://your-tenant.us.auth0.com
+AUTH_RESOURCE_SERVER_URL=https://yourdomain.com/mcp
+AUTH_AUDIENCE=https://api.example.com
+```
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url=os.getenv("AUTH_ISSUER_URL"),
+    auth_resource_server_url=os.getenv("AUTH_RESOURCE_SERVER_URL"),
+    auth_audience=os.getenv("AUTH_AUDIENCE"),
+    auth_required_scopes=["user"],
+)
+```
+
+---
+
+## Next Steps
+
+- [**Server Configuration**](/docs/auth/server-configuration) - Configure your FastApps server
+- [**Testing**](/docs/auth/troubleshooting) - Test your OAuth setup
+- [**Examples**](/docs/auth/examples) - See real-world implementations
+

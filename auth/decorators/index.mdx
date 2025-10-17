@@ -1,0 +1,353 @@
+---
+title: Widget Decorators
+description: Control authentication requirements for individual widgets using decorators.
+---
+
+## Overview
+
+FastApps provides three decorators for per-widget authentication control:
+
+- **`@auth_required`** - Require OAuth authentication
+- **`@no_auth`** - Explicitly public (opt-out)
+- **`@optional_auth`** - Support both authenticated and anonymous access
+
+---
+
+## @auth_required
+
+Require OAuth authentication for a specific widget.
+
+### Basic Usage
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+
+@auth_required
+class ProtectedWidget(BaseWidget):
+    identifier = "protected"
+    title = "Protected Widget"
+    input_schema = ProtectedInput
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # User is guaranteed to be authenticated
+        return {
+            "user_id": user.subject,
+            "message": f"Hello, {user.claims.get('name')}!"
+        }
+```
+
+### With Scopes
+
+Require specific OAuth scopes:
+
+```python
+@auth_required(scopes=["user", "write:data"])
+class WriteDataWidget(BaseWidget):
+    identifier = "write-data"
+    title = "Write Data Widget"
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # User must have "user" AND "write:data" scopes
+        if not user.has_scope("write:data"):
+            return {"error": "Insufficient permissions"}
+        
+        # Perform write operation
+        return {"success": True}
+```
+
+### Syntax Options
+
+All these are valid:
+
+```python
+@auth_required                           # No scopes
+@auth_required()                         # No scopes (explicit)
+@auth_required(scopes=["user"])          # Single scope
+@auth_required(scopes=["user", "admin"]) # Multiple scopes
+```
+
+---
+
+## @no_auth
+
+Mark a widget as explicitly public (opt-out of server authentication).
+
+### Usage
+
+```python
+from fastapps import BaseWidget, no_auth
+
+@no_auth
+class PublicSearchWidget(BaseWidget):
+    identifier = "public-search"
+    title = "Public Search"
+    
+    async def execute(self, input_data, context, user):
+        # Accessible to everyone, user may be None
+        return {
+            "results": search_public_data(input_data.query)
+        }
+```
+
+### When to Use
+
+Use `@no_auth` when:
+- Widget displays public information
+- Server has authentication enabled, but this widget should be public
+- No user-specific data is needed
+
+### Important
+
+Even with `@no_auth`, you can still check if a user is authenticated:
+
+```python
+@no_auth
+class FlexibleWidget(BaseWidget):
+    async def execute(self, input_data, context, user):
+        if user and user.is_authenticated:
+            # Show extra features for authenticated users
+            return {"content": "full", "premium": True}
+        
+        # Basic content for everyone
+        return {"content": "preview"}
+```
+
+---
+
+## @optional_auth
+
+Support both authenticated and anonymous access.
+
+### Basic Usage
+
+```python
+from fastapps import BaseWidget, optional_auth, UserContext
+
+@optional_auth(scopes=["user"])
+class ContentWidget(BaseWidget):
+    identifier = "content"
+    title = "Content Widget"
+    
+    async def execute(self, input_data, context, user: UserContext):
+        if user.is_authenticated:
+            # Premium features for authenticated users
+            return {
+                "tier": "premium",
+                "user": user.subject,
+                "features": ["advanced", "export", "share"]
+            }
+        
+        # Basic features for everyone
+        return {
+            "tier": "basic",
+            "features": ["view"]
+        }
+```
+
+### Freemium Pattern
+
+Perfect for freemium models:
+
+```python
+@optional_auth(scopes=["user"])
+class AnalyticsWidget(BaseWidget):
+    identifier = "analytics"
+    title = "Analytics Dashboard"
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Base analytics available to everyone
+        base_data = get_public_analytics()
+        
+        if user.is_authenticated:
+            # Add user-specific analytics
+            user_data = get_user_analytics(user.subject)
+            
+            if user.has_scope("premium"):
+                # Full analytics for premium users
+                return {
+                    "type": "premium",
+                    "base": base_data,
+                    "user": user_data,
+                    "advanced": get_advanced_analytics(user.subject)
+                }
+            
+            # Standard analytics for free users
+            return {
+                "type": "standard",
+                "base": base_data,
+                "user": user_data
+            }
+        
+        # Public analytics only
+        return {
+            "type": "public",
+            "base": base_data
+        }
+```
+
+---
+
+## Authentication Inheritance
+
+Per MCP spec: **"Missing field: inherit server default policy"**
+
+Widgets without explicit decorators inherit the server's authentication policy:
+
+| Server Auth | Widget Decorator | Result |
+|-------------|------------------|--------|
+| **Enabled** | None | Required (inherits server) |
+| **Enabled** | @auth_required | Required (widget-specific scopes) |
+| **Enabled** | @no_auth | Public (opt-out) |
+| **Enabled** | @optional_auth | Optional |
+| **Disabled** | None | Public |
+| **Disabled** | @auth_required | Required |
+| **Disabled** | @no_auth | Public |
+| **Disabled** | @optional_auth | Optional |
+
+### Examples
+
+**Scenario 1: Server requires auth, widget inherits**
+
+```python
+# server/main.py
+server = WidgetMCPServer(
+    name="my-widgets",
+    widgets=tools,
+    auth_issuer_url="https://tenant.auth0.com",
+    auth_resource_server_url="https://example.com/mcp",
+    auth_required_scopes=["user"],
+)
+
+# server/tools/my_widget_tool.py
+class MyWidgetTool(BaseWidget):
+    # No decorator - inherits server's ["user"] scope requirement
+    pass
+```
+
+**Scenario 2: Server requires auth, widget opts out**
+
+```python
+# server/main.py (same as above - server requires auth)
+
+# server/tools/public_widget_tool.py
+@no_auth
+class PublicWidgetTool(BaseWidget):
+    # Explicitly public despite server auth
+    pass
+```
+
+**Scenario 3: Server requires auth, widget adds more scopes**
+
+```python
+# server/main.py (requires ["user"])
+
+# server/tools/admin_widget_tool.py
+@auth_required(scopes=["admin"])
+class AdminWidgetTool(BaseWidget):
+    # Requires "admin" scope
+    pass
+```
+
+---
+
+## Scope Enforcement
+
+### Widget-Specific Scopes
+
+```python
+@auth_required(scopes=["admin", "write:sensitive"])
+class SensitiveWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        # User must have BOTH "admin" AND "write:sensitive"
+        return {"sensitive_data": "..."}
+```
+
+### Checking Scopes in Code
+
+```python
+@auth_required
+class FlexibleAdminWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        if user.has_scope("super_admin"):
+            return {"level": "full_access"}
+        elif user.has_scope("admin"):
+            return {"level": "limited_access"}
+        else:
+            return {"error": "Insufficient permissions"}
+```
+
+---
+
+## Best Practices
+
+### 1. Use Specific Scopes
+
+```python
+# ✅ Good: Specific scopes for different operations
+@auth_required(scopes=["user", "write:documents"])
+class CreateDocumentWidget(BaseWidget):
+    pass
+
+# ⚠️ Less ideal: Generic scope
+@auth_required(scopes=["user"])
+class CreateDocumentWidget(BaseWidget):
+    pass
+```
+
+### 2. Check Authentication Status
+
+```python
+@optional_auth(scopes=["user"])
+class SmartWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        # Always check is_authenticated for optional auth
+        if user.is_authenticated:
+            return self._authenticated_version(user)
+        return self._public_version()
+```
+
+### 3. Provide Helpful Error Messages
+
+```python
+@auth_required(scopes=["admin"])
+class AdminWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        if not user.has_scope("admin"):
+            return {
+                "error": "Admin access required",
+                "message": "Contact your administrator for access"
+            }
+        # ...
+```
+
+### 4. Use Type Hints
+
+```python
+from fastapps import UserContext
+
+async def execute(self, input_data, context, user: UserContext):
+    # IDE will autocomplete user.subject, user.scopes, etc.
+    pass
+```
+
+### 5. Explicit Opt-Out
+
+```python
+# ✅ Good: Makes intent clear
+@no_auth
+class PublicSearchWidget(BaseWidget):
+    pass
+
+# ❌ Bad: Ambiguous intent
+class PublicSearchWidget(BaseWidget):
+    pass
+```
+
+---
+
+## Next Steps
+
+- [**User Context**](/docs/auth/user-context) - Access user information and claims
+- [**Examples**](/docs/auth/examples) - Real-world authentication patterns
+- [**Server Configuration**](/docs/auth/server-configuration) - Configure server-level auth
+

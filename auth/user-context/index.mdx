@@ -1,0 +1,366 @@
+---
+title: User Context
+description: Access authenticated user information through the UserContext API.
+---
+
+## Overview
+
+When a widget is called with authentication, the `user` parameter provides access to:
+- User identifier (subject)
+- OAuth client ID
+- Granted scopes/permissions
+- Full JWT claims
+- Authentication status
+
+---
+
+## Properties
+
+### is_authenticated
+
+Whether the user is authenticated.
+
+**Type**: `bool`
+
+**Usage**:
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    if user.is_authenticated:
+        return {"message": f"Hello, {user.subject}!"}
+    else:
+        return {"message": "Please sign in"}
+```
+
+### subject
+
+User identifier from JWT `sub` claim.
+
+**Type**: `Optional[str]`
+
+**Usage**:
+
+```python
+user_id = user.subject  # e.g., "auth0|123456"
+user_data = fetch_user_data(user_id)
+```
+
+### client_id
+
+OAuth client ID.
+
+**Type**: `Optional[str]`
+
+**Usage**:
+
+```python
+client = user.client_id
+log_access(client_id=client, user_id=user.subject)
+```
+
+### scopes
+
+Granted OAuth scopes/permissions.
+
+**Type**: `List[str]`
+
+**Usage**:
+
+```python
+user_scopes = user.scopes  # e.g., ["user", "read:data", "write:data"]
+
+if "admin" in user.scopes:
+    return admin_dashboard()
+```
+
+### claims
+
+Full JWT claims dictionary.
+
+**Type**: `Dict[str, Any]`
+
+**Usage**:
+
+```python
+email = user.claims.get('email')
+name = user.claims.get('name')
+custom_data = user.claims.get('custom_field')
+role = user.claims.get('https://example.com/role')
+```
+
+**Common Claims**:
+- `sub` - User identifier
+- `email` - User email
+- `name` - User full name
+- `picture` - Profile picture URL
+- `email_verified` - Email verification status
+- Custom claims (namespaced)
+
+---
+
+## Methods
+
+### has_scope()
+
+Check if user has a specific scope.
+
+**Signature**: `has_scope(scope: str) -> bool`
+
+**Usage**:
+
+```python
+if user.has_scope("admin"):
+    return {"admin_panel": True}
+elif user.has_scope("user"):
+    return {"user_panel": True}
+else:
+    return {"error": "Insufficient permissions"}
+```
+
+**Multiple Scopes**:
+
+```python
+if user.has_scope("write:data") and user.has_scope("delete:data"):
+    allow_destructive_operations()
+```
+
+---
+
+## Complete Example
+
+```python
+from fastapps import BaseWidget, auth_required, UserContext
+
+@auth_required(scopes=["user"])
+class UserProfileWidget(BaseWidget):
+    identifier = "user-profile"
+    title = "User Profile"
+    
+    async def execute(self, input_data, context, user: UserContext):
+        # Check authentication status
+        if not user.is_authenticated:
+            return {"error": "Authentication required"}
+        
+        # Access user information
+        user_id = user.subject
+        email = user.claims.get('email')
+        name = user.claims.get('name')
+        picture = user.claims.get('picture')
+        
+        # Check permissions
+        is_premium = user.has_scope("premium")
+        is_admin = user.has_scope("admin")
+        
+        # Fetch user data from your database
+        user_data = await fetch_user_data(user_id)
+        
+        return {
+            "user_id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "is_premium": is_premium,
+            "is_admin": is_admin,
+            "profile": user_data,
+            "scopes": user.scopes
+        }
+```
+
+---
+
+## Access Patterns
+
+### Basic User Info
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    return {
+        "user_id": user.subject,
+        "email": user.claims.get('email'),
+        "name": user.claims.get('name')
+    }
+```
+
+### Role-Based Access
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    role = user.claims.get('role', 'user')
+    
+    if role == 'admin':
+        return await self._admin_view(user)
+    elif role == 'manager':
+        return await self._manager_view(user)
+    else:
+        return await self._user_view(user)
+```
+
+### Permission Checking
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    # Check multiple permissions
+    can_read = user.has_scope("read:data")
+    can_write = user.has_scope("write:data")
+    can_delete = user.has_scope("delete:data")
+    
+    return {
+        "permissions": {
+            "read": can_read,
+            "write": can_write,
+            "delete": can_delete
+        }
+    }
+```
+
+### Custom Claims
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    # Access custom claims (Auth0 uses namespaced claims)
+    organization = user.claims.get('https://example.com/organization')
+    department = user.claims.get('https://example.com/department')
+    employee_id = user.claims.get('https://example.com/employee_id')
+    
+    return {
+        "organization": organization,
+        "department": department,
+        "employee_id": employee_id
+    }
+```
+
+---
+
+## Optional Authentication
+
+With `@optional_auth`, always check `is_authenticated`:
+
+```python
+from fastapps import optional_auth
+
+@optional_auth(scopes=["user"])
+class FlexibleWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        # Check if user is authenticated
+        if user.is_authenticated:
+            # Authenticated version
+            return {
+                "tier": "premium",
+                "user_id": user.subject,
+                "email": user.claims.get('email'),
+                "features": ["advanced", "export"]
+            }
+        
+        # Anonymous version
+        return {
+            "tier": "basic",
+            "features": ["view"]
+        }
+```
+
+---
+
+## User-Specific Data Fetching
+
+```python
+@auth_required(scopes=["user"])
+class UserDataWidget(BaseWidget):
+    async def execute(self, input_data, context, user: UserContext):
+        # Always use user.subject for database queries
+        user_id = user.subject
+        
+        # ✅ Good: Use authenticated user ID
+        user_data = await fetch_from_database(user_id)
+        
+        # ❌ Bad: Don't trust user-supplied IDs
+        # user_data = await fetch_from_database(input_data.user_id)
+        
+        return {
+            "user_id": user_id,
+            "data": user_data
+        }
+```
+
+---
+
+## Security Best Practices
+
+### 1. Always Use user.subject
+
+```python
+# ✅ Good
+async def execute(self, input_data, context, user: UserContext):
+    data = fetch_user_data(user.subject)
+    return {"data": data}
+
+# ❌ Bad - Don't trust input
+async def execute(self, input_data, context, user: UserContext):
+    data = fetch_user_data(input_data.user_id)  # UNSAFE!
+    return {"data": data}
+```
+
+### 2. Validate Permissions
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    # Double-check critical operations
+    if not user.has_scope("admin"):
+        return {"error": "Unauthorized"}
+    
+    # Proceed with admin operation
+    delete_resource(input_data.resource_id)
+```
+
+### 3. Log Access
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    # Log sensitive access
+    await log_access(
+        user_id=user.subject,
+        action="viewed_sensitive_data",
+        timestamp=datetime.utcnow()
+    )
+    
+    return {"data": "..."}
+```
+
+### 4. Handle Missing Claims
+
+```python
+async def execute(self, input_data, context, user: UserContext):
+    # Always provide defaults for claims
+    email = user.claims.get('email', 'unknown')
+    name = user.claims.get('name', 'Anonymous')
+    
+    return {"email": email, "name": name}
+```
+
+---
+
+## Type Hints
+
+Use type hints for better IDE support:
+
+```python
+from fastapps import UserContext
+
+async def execute(
+    self,
+    input_data: MyInput,
+    context: ClientContext,
+    user: UserContext  # Type hint
+) -> Dict[str, Any]:
+    # IDE will autocomplete user.subject, user.scopes, etc.
+    user_id = user.subject
+    # ...
+```
+
+---
+
+## Next Steps
+
+- [**Examples**](/docs/auth/examples) - See real-world user context usage
+- [**Decorators**](/docs/auth/decorators) - Control widget authentication
+- [**Troubleshooting**](/docs/auth/troubleshooting) - Common issues
+

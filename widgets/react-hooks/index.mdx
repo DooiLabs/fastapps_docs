@@ -1,0 +1,278 @@
+---
+title: React Hooks
+description: Complete guide to FastApps React hooks for building interactive widgets
+---
+
+Master the React hooks that power FastApps widgets.
+
+## Core Hooks
+
+### useWidgetProps()
+
+Access data returned from your Python tool's `execute()` method.
+
+```tsx
+import { useWidgetProps } from 'fastapps';
+
+interface MyWidgetProps {
+  message: string;
+  count: number;
+  items: string[];
+}
+
+export default function MyWidget() {
+  const props = useWidgetProps<MyWidgetProps>();
+  
+  return (
+    <div>
+      <h1>{props.message}</h1>
+      <p>Count: {props.count}</p>
+      <ul>
+        {props.items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+**How it works:**
+- Maps to `window.openai.toolOutput`
+- Data comes from your Python tool's `return` statement
+- Updates automatically on new tool calls
+
+### useWidgetState()
+
+Manage persistent state that survives across ChatGPT sessions.
+
+```tsx
+import { useWidgetState } from 'fastapps';
+
+export default function Counter() {
+  const [state, setState] = useWidgetState({ count: 0 });
+  
+  const increment = () => {
+    setState({ count: state.count + 1 });
+  };
+  
+  return (
+    <div>
+      <p>Count: {state?.count || 0}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+```
+
+**How it works:**
+- Maps to `window.openai.widgetState` and `setWidgetState()`
+- State persists in ChatGPT's conversation context
+- Survives page refreshes and widget re-renders
+- Accepts initial state as default value
+
+**Advanced usage:**
+```tsx
+// With TypeScript
+interface CounterState {
+  count: number;
+  lastUpdated: string;
+}
+
+const [state, setState] = useWidgetState<CounterState>({
+  count: 0,
+  lastUpdated: new Date().toISOString()
+});
+
+// Update state
+setState({
+  count: state.count + 1,
+  lastUpdated: new Date().toISOString()
+});
+```
+
+### useOpenAiGlobal()
+
+Access ChatGPT environment information like theme, layout, and locale. This is the base hook for accessing any global property.
+
+```tsx
+import { useOpenAiGlobal } from 'fastapps';
+
+export default function ThemedWidget() {
+  const theme = useOpenAiGlobal('theme');
+  const displayMode = useOpenAiGlobal('displayMode');
+  const locale = useOpenAiGlobal('locale');
+  const maxHeight = useOpenAiGlobal('maxHeight');
+  
+  return (
+    <div style={{
+      background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
+      color: theme === 'dark' ? '#ffffff' : '#000000',
+      maxHeight: `${maxHeight}px`,
+      overflow: 'auto'
+    }}>
+      <p>Current theme: {theme}</p>
+      <p>Display mode: {displayMode}</p>
+      <p>User locale: {locale}</p>
+    </div>
+  );
+}
+```
+
+## Convenience Hooks
+
+### useDisplayMode()
+
+Convenience hook for accessing the current display mode. Equivalent to `useOpenAiGlobal('displayMode')`.
+
+```tsx
+import { useDisplayMode } from 'fastapps';
+
+export default function ResponsiveWidget() {
+  const displayMode = useDisplayMode();
+  
+  return (
+    <div className={`mode-${displayMode}`}>
+      {displayMode === 'fullscreen' ? (
+        <div>
+          <h1>Full Screen Layout</h1>
+          <p>More space to show detailed content</p>
+        </div>
+      ) : displayMode === 'pip' ? (
+        <div>
+          <p>Picture-in-Picture view</p>
+        </div>
+      ) : (
+        <div>
+          <p>Inline compact view</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+**Display modes:**
+- `inline` - Default mode, widget appears inline with the conversation
+- `pip` - Picture-in-picture mode (mobile may coerce to fullscreen)
+- `fullscreen` - Full screen takeover
+
+### useMaxHeight()
+
+Convenience hook for accessing the maximum height constraint. Equivalent to `useOpenAiGlobal('maxHeight')`.
+
+```tsx
+import { useMaxHeight } from 'fastapps';
+
+export default function ScrollableWidget() {
+  const maxHeight = useMaxHeight();
+  
+  return (
+    <div style={{ 
+      maxHeight: `${maxHeight}px`, 
+      overflow: 'auto',
+      padding: '16px'
+    }}>
+      <h2>Long Content</h2>
+      <p>This content will scroll if it exceeds the max height...</p>
+      {/* More content */}
+    </div>
+  );
+}
+```
+
+**Best practices:**
+- Always respect the `maxHeight` constraint
+- Use `overflow: auto` to enable scrolling
+- Consider the user's viewport size when designing layouts
+
+## Available Globals
+
+Use `useOpenAiGlobal(key)` to access:
+
+| Key | Type | Description | Example |
+|-----|------|-------------|---------|
+| `theme` | `'light' \| 'dark'` | ChatGPT's current theme | `'dark'` |
+| `displayMode` | `'inline' \| 'pip' \| 'fullscreen'` | Current display mode | `'inline'` |
+| `locale` | `string` | User's preferred locale (IETF BCP 47) | `'en-US'`, `'fr-FR'` |
+| `maxHeight` | `number` | Maximum height constraint in pixels | `600` |
+| `safeArea` | `SafeArea` | Safe area insets for mobile layouts | `{ insets: { top: 20, ... }}` |
+| `userAgent` | `UserAgent` | Device and capability information | `{ device: { type: 'mobile' }, ... }` |
+| `toolInput` | `object` | Input parameters passed to your tool | `{ city: 'NYC' }` |
+| `toolOutput` | `object` | Current tool output (same as `useWidgetProps()`) | `{ message: 'Hello' }` |
+| `widgetState` | `object` | Current persistent state (same as `useWidgetState()`) | `{ count: 5 }` |
+
+## TypeScript Support
+
+All hooks include full TypeScript type definitions:
+
+```tsx
+import type { 
+  OpenAiGlobals,
+  Theme,
+  DisplayMode,
+  UserAgent,
+  SafeArea 
+} from 'fastapps';
+
+// Strongly typed props
+interface MyProps {
+  message: string;
+  count: number;
+}
+
+const props = useWidgetProps<MyProps>();
+// props.message is string ✓
+// props.count is number ✓
+
+// Strongly typed state
+interface MyState {
+  items: string[];
+}
+
+const [state, setState] = useWidgetState<MyState>({ items: [] });
+// state.items is string[] ✓
+
+// All globals are typed
+const theme: Theme | null = useOpenAiGlobal('theme');
+const mode: DisplayMode | null = useOpenAiGlobal('displayMode');
+
+// Convenience hooks are also typed
+const displayMode: DisplayMode | null = useDisplayMode();
+const maxHeight: number | null = useMaxHeight();
+```
+
+**Available hooks:**
+- `useWidgetProps<T>(defaultState?)` - Access tool output with optional fallback
+- `useWidgetState<T>(defaultState)` - Persistent state management
+- `useOpenAiGlobal(key)` - Access any global property
+- `useDisplayMode()` - Get display mode (convenience)
+- `useMaxHeight()` - Get max height (convenience)
+
+## Creating Custom Convenience Hooks
+
+You can easily create your own convenience hooks for frequently accessed globals:
+
+```tsx
+import { useOpenAiGlobal } from 'fastapps';
+
+// Custom hook for theme
+export function useTheme() {
+  return useOpenAiGlobal('theme');
+}
+
+// Custom hook for tool input
+export function useToolInput<T = any>() {
+  return useOpenAiGlobal('toolInput') as T | null;
+}
+
+// Custom hook for locale
+export function useLocale() {
+  return useOpenAiGlobal('locale');
+}
+```
+
+## Next Steps
+
+- [Explore Advanced Patterns →](/docs/widgets/advanced-patterns)
+- [Back to Widget Basics →](/docs/widgets/basics)

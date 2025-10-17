@@ -1,0 +1,116 @@
+---
+title: Widget Basics
+description: Learn the fundamentals of creating FastApps widgets
+---
+
+Learn the fundamentals of creating FastApps widgets.
+
+## What is a Widget?
+
+A widget is a React component that:
+- Lives in `widgets/<widget-name>/index.jsx`
+- Receives props from your Python tool
+- Renders in the ChatGPT interface
+- Can be interactive and stateful
+
+## Basic Widget Structure
+
+```jsx
+import React from "react";
+import { useWidgetProps } from "fastapps";
+
+export default function MyWidget() {
+  // 1. Get data from Python backend
+  const props = useWidgetProps();
+
+  // 2. Render UI based on props
+  return (
+    <div style={{ padding: "1rem" }}>
+      <h2>{props.title}</h2>
+      <p>{props.description}</p>
+    </div>
+  );
+}
+```
+
+## Common Patterns
+
+### Lists
+
+```jsx
+export default function PizzaList() {
+  const { pizzas } = useWidgetProps();
+
+  return (
+    <ul>
+      {pizzas.map((pizza) => (
+        <li key={pizza.name}>
+          <strong>{pizza.name}</strong> — {pizza.style}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### User Input with State
+
+```jsx
+import { useWidgetState } from "fastapps";
+
+export default function TodoWidget() {
+  const [todos, setTodos] = useWidgetState("todos", []);
+  const [text, setText] = useWidgetState("text", "");
+
+  return (
+    <div>
+      <input
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        placeholder="Add a task"
+      />
+      <button
+        onClick={() => {
+          setTodos([...todos, text]);
+          setText("");
+        }}
+      >
+        Add
+      </button>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo}>{todo}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Conditional UI
+
+```jsx
+export default function WeatherWidget() {
+  const { loading, weather } = useWidgetProps();
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!weather) {
+    return <p>No forecast available.</p>;
+  }
+
+  return (
+    <div>
+      <h2>{weather.city}</h2>
+      <p>{weather.summary}</p>
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+- [Learn about React Hooks →](/docs/widgets/react-hooks)
+- [Explore Advanced Patterns →](/docs/widgets/advanced-patterns)

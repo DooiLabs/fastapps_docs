@@ -1,43 +1,66 @@
-# Mintlify Starter Kit
+# FastApps Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+Official documentation for FastApps - a zero-boilerplate framework for building ChatGPT widgets.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Overview
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+This documentation site is built with [Mintlify](https://mintlify.com) and covers:
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+- **Getting Started**: Introduction, quickstart, and project setup
+- **Tutorial**: Step-by-step guide to building your first widget
+- **Widgets**: Building interactive UI components with React
+- **Tools**: Creating backend logic with Python
+- **Core Concepts**: State management, styling, and API integration
+- **Authentication**: OAuth 2.0 integration with various providers
+- **API Reference**: Complete API documentation
 
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
-npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
+## Structure
 
 ```
-mint dev
+docs/
+├── what-is-fastapps/    # Architecture and core concepts
+├── introduction/        # Framework introduction
+├── quickstart/          # 5-minute getting started guide
+├── project-setup/       # Project structure and configuration
+├── tutorial/            # Step-by-step tutorial
+├── widgets/             # Widget development guides
+├── tools/               # Tool development guides
+├── state/               # State management
+├── styling/             # Styling widgets
+├── api-integration/     # External API integration
+├── auth/                # Authentication setup
+└── api-reference/       # API documentation
 ```
 
-View your local preview at `http://localhost:3000`.
+## Local Development
 
-## Publishing changes
+To preview this documentation locally:
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+```bash
+# Install Mintlify CLI
+npm i -g mintlify
 
-## Need help?
+# Preview docs
+mintlify dev
+```
 
-### Troubleshooting
+The documentation will be available at `http://localhost:3000`.
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+## Contributing
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+To contribute to the documentation:
+
+1. Edit the relevant `.mdx` files in the `docs/` directory
+2. Update `docs.json` if adding new pages or changing navigation
+3. Test your changes with `mintlify dev`
+4. Submit a pull request
+
+## Links
+
+- [FastApps GitHub](https://github.com/fastapps)
+- [FastApps PyPI Package](https://pypi.org/project/fastapps/)
+- [Community Discord](https://discord.gg/fastapps)
+
+## License
+
+See [LICENSE](./LICENSE) file for details.

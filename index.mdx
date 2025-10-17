@@ -1,97 +1,179 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Welcome to FastApps"
+description: "Build ChatGPT widgets with zero boilerplate - just write your logic and UI!"
 ---
 
-## Setting up
+## What is FastApps?
 
-Get your documentation site up and running in minutes.
+FastApps is a **zero-boilerplate framework** for building interactive ChatGPT widgets powered by OpenAI's Apps SDK and the Model Context Protocol (MCP).
 
 <Card
-  title="Start here"
+  title="Quick Start"
   icon="rocket"
-  href="/quickstart"
+  href="/quickstart/index"
   horizontal
 >
-  Follow our three step quickstart guide.
+  Get your first widget running in 5 minutes!
 </Card>
 
-## Make it yours
+## Why FastApps?
 
-Design a docs site that looks great and empowers your users.
+Building widgets with the raw Apps SDK requires extensive boilerplate - protocol handlers, tool registration, resource management, and build configuration. **FastApps eliminates all of that.**
 
 <Columns cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="Zero Boilerplate"
+    icon="wand-magic-sparkles"
   >
-    Edit your docs locally and preview them in real time.
+    Just 2 files per widget - a Python tool and a React component. That's it!
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="Auto-Discovery"
+    icon="magnifying-glass"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Drop files in `server/tools/` and FastApps automatically discovers and registers them.
   </Card>
   <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
+    title="Type Safety"
+    icon="shield-check"
   >
-    Auto-generate API documentation from OpenAPI specifications.
+    Full Pydantic validation on backend and TypeScript support on frontend.
+  </Card>
+  <Card
+    title="Built-in Authentication"
+    icon="lock"
+  >
+    OAuth 2.0 support with Auth0, Clerk, and custom providers out of the box.
   </Card>
 </Columns>
 
-## Create beautiful pages
+## Quick Example
 
-Everything you need to create world-class documentation.
+### Python Tool (Backend)
+```python
+from fastapps import BaseWidget, Field, ConfigDict
+from pydantic import BaseModel
+from typing import Dict, Any
+
+class MyWidgetInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    name: str = Field(default="World")
+
+class MyWidgetTool(BaseWidget):
+    identifier = "my-widget"
+    title = "My Widget"
+    input_schema = MyWidgetInput
+    invoking = "Processing..."
+    invoked = "Done!"
+    
+    async def execute(self, input_data: MyWidgetInput) -> Dict[str, Any]:
+        return {"message": f"Hello, {input_data.name}!"}
+```
+
+### React Widget (Frontend)
+```jsx
+import React from 'react';
+import { useWidgetProps } from 'fastapps';
+
+export default function MyWidget() {
+  const props = useWidgetProps();
+  return <h1>{props.message}</h1>;
+}
+```
+
+That's all you need! FastApps handles everything else automatically.
+
+## Core Features
 
 <Columns cols={2}>
   <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
+    title="Widgets"
+    icon="window"
+    href="/widgets/index"
   >
-    Use MDX to style your docs pages.
+    Learn how to build interactive UI components with React.
   </Card>
   <Card
-    title="Code samples"
+    title="Tools"
+    icon="wrench"
+    href="/tools/index"
+  >
+    Create backend logic with Python and Pydantic validation.
+  </Card>
+  <Card
+    title="State Management"
+    icon="database"
+    href="/state/index"
+  >
+    Manage widget state with built-in React hooks.
+  </Card>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/auth/index"
+  >
+    Secure your widgets with OAuth 2.0 providers.
+  </Card>
+  <Card
+    title="Styling"
+    icon="paintbrush"
+    href="/styling/index"
+  >
+    Style your widgets with CSS, Tailwind, or any framework.
+  </Card>
+  <Card
+    title="API Integration"
+    icon="plug"
+    href="/api-integration/index"
+  >
+    Connect to external APIs and services.
+  </Card>
+</Columns>
+
+## What You'll Build
+
+With FastApps, you can create:
+- **Interactive dashboards** with real-time data
+- **Form widgets** with validation and submission
+- **Data visualizations** with charts and graphs
+- **API integrations** that connect to external services
+- **Authenticated widgets** with user-specific data
+
+## Ready to Get Started?
+
+<CardGroup cols={2}>
+  <Card
+    title="What is FastApps?"
+    icon="circle-question"
+    href="/what-is-fastapps/index"
+  >
+    Understand the architecture and core concepts.
+  </Card>
+  <Card
+    title="Quick Start"
+    icon="bolt"
+    href="/quickstart/index"
+  >
+    Build your first widget in 5 minutes.
+  </Card>
+  <Card
+    title="Tutorial"
+    icon="book-open"
+    href="/tutorial/index"
+  >
+    Follow a step-by-step guide to building a complete app.
+  </Card>
+  <Card
+    title="API Reference"
     icon="code"
-    href="/essentials/code"
+    href="/api-reference/index"
   >
-    Add sample code to demonstrate how to use your product.
+    Explore the complete API documentation.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+---
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+> **"You should write your widget logic and UI, not MCP boilerplate."**
+
+Need help? Join our [Discord community](https://discord.gg/fastapps) or check out the [GitHub repository](https://github.com/fastapps).

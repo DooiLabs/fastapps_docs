@@ -1,0 +1,90 @@
+---
+title: Styling Guide
+description: Style FastApps widgets with inline techniques and lightweight design patterns.
+---
+
+Learn how to create beautiful, responsive widgets with great UX.
+
+## Inline Styles (Recommended)
+
+### Why Inline Styles?
+
+✅ **Advantages:**
+- No build configuration needed
+- Scoped to component automatically
+- Dynamic based on props/state
+- Works in all environments
+- Simple and straightforward
+
+❌ **No need for:**
+- CSS files
+- CSS modules
+- Styled-components
+- Tailwind (in most cases)
+
+## Example Widget Styling
+
+```jsx
+export default function WeatherCard() {
+  const { city, forecast } = useWidgetProps();
+
+  return (
+    <div
+      style={{
+        padding: "1.5rem",
+        borderRadius: "16px",
+        background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+        color: "white",
+        boxShadow: "0 20px 40px -20px rgba(79, 70, 229, 0.6)",
+      }}
+    >
+      <p style={{ fontSize: "0.85rem", opacity: 0.8 }}>{city}</p>
+      <h2 style={{ margin: "0.5rem 0", fontSize: "2rem" }}>
+        {forecast.temperature}°
+      </h2>
+      <p>{forecast.summary}</p>
+    </div>
+  );
+}
+```
+
+## Responsive Layouts
+
+```jsx
+const containerStyle = {
+  display: "grid",
+  gap: "1rem",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+};
+```
+
+- Use CSS grid or flexbox inline
+- Prefer percentage widths or `minmax` for responsive cards
+- Adjust spacing with consistent `rem` values
+
+## Typography
+
+- Set `fontSize`, `fontWeight`, `lineHeight` inline
+- Use system fonts for consistency: `"Inter", -apple-system, system-ui`
+- Keep headings bold and larger than body text
+
+## Theming
+
+```jsx
+const theme = {
+  background: "#0f172a",
+  surface: "#1e293b",
+  primary: "#38bdf8",
+  text: "#e2e8f0",
+};
+```
+
+Apply theme values through inline styles or helper functions to keep widgets cohesive.
+
+## Polishing Touches
+
+- Rounded corners (`borderRadius`)
+- Soft shadows (`boxShadow`)
+- Gradient backgrounds
+- Micro interactions (hover styles, button animations)
+- Color-coded states for success/warning/error
