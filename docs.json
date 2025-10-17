@@ -23,8 +23,7 @@
           {
             "group": "Getting Started",
             "pages": [
-              "quickstart/index",
-              "project-setup/index"
+              "quickstart/index"
             ]
           },
           {
