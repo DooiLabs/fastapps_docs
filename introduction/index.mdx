@@ -1,9 +1,7 @@
 ---
-title: Introduction to FastApps
-description: Understand what FastApps is, why it exists, and how it upgrades ChatGPT apps development.
+title: "Introduction to FastApps"
+description: "Understand what FastApps is, why it exists, and how it upgrades ChatGPT apps development."
 ---
-
-Welcome to FastApps - a zero-boilerplate framework for building interactive ChatGPT apps powered by Apps SDK and FastMCP!
 
 ## Overview
 
@@ -11,11 +9,11 @@ FastApps is a Python framework that eliminates the complexity of building Apps i
 
 ## The Problem
 
-OpenAI's Apps SDK lets you build rich, interactive widgets for ChatGPT using the Model Context Protocol (MCP). But the manual setup is extensive:
+OpenAI's Apps SDK lets you build apps for ChatGPT. But the manual setup is extensive:
 
-### Raw Apps SDK
-<div style={{ maxHeight: '500px', overflowY: 'auto', marginBottom: '1rem' }}>
+### Raw Apps SDK (The problem)
 
+<div style={{ maxHeight:"500px",overflowY:"auto",marginBottom:"1rem" }}>
 ```python
 from __future__ import annotations
 
@@ -343,7 +341,8 @@ if __name__ == "__main__":
 
 With FastApps, you write **just 2 files**:
 
-### Python Tool
+### MCP Tool (widget registeration)
+
 ```python
 from fastapps import BaseWidget, ConfigDict
 from pydantic import BaseModel
@@ -372,7 +371,8 @@ class MyWidgetTool(BaseWidget):
         }
 ```
 
-### React Component
+### React Component (UI of the widget)
+
 ```jsx
 import React from 'react';
 import { useWidgetProps } from 'fastapps';
@@ -384,6 +384,7 @@ export default function MyWidget() {
 ```
 
 **That's it! FastApps automatically handles all the boilerplate:**
+
 - ✅ MCP server setup and protocol implementation
 - ✅ Tool and resource registration with proper mime types
 - ✅ Metadata wiring and CSP configuration
@@ -419,18 +420,23 @@ export default function MyWidget() {
 ## How It Works
 
 ### Structure
+
 Every widget has two parts:
-- **Python Tool** - Backend logic with Pydantic validation
+
+- **MCP Tool** - Backend logic with Pydantic validation
 - **React Component** - Frontend UI with type-safe props
 
 ### Auto-Discovery
+
 Drop a file in `server/tools/` and FastApps automatically:
+
 1. Discovers all `BaseWidget` subclasses
 2. Registers them as MCP tools with proper metadata
 3. Creates HTML resources and wires everything together
 4. Links to React components in `widgets/` folder
 
 ### Workflow
+
 ```bash
 fastapps create mywidget     # It create the files of tool + component
 # Edit server/tools/mywidget_tool.py
@@ -438,28 +444,15 @@ fastapps create mywidget     # It create the files of tool + component
 npm run build && python server/main.py
 ```
 
-
 ## Comparison
 
-| Aspect | Raw Apps SDK | FastApps |
-|--------|--------------|----------|
-| **Setup** | Manual server config, protocol handlers | Auto-configured |
-| **Registration** | Manual tools + resources + metadata | Auto-discovered |
-| **Asset Bundling** | Custom build scripts | Built-in Vite |
-| **Files per Widget** | 5+ files | **2 files** |
-| **Boilerplate Lines** | ~150+ lines | **~0 lines** |
-
-## Stack & API
-
-**Backend**: Python + FastMCP + Pydantic  
-**Frontend**: React + Vite + TypeScript  
-**Protocol**: Model Context Protocol (MCP)
-
-**Core API**:
-- `BaseWidget` - Base class for all tools
-- `useWidgetProps()` / `useWidgetState()` / `useOpenAiGlobal()` - Core React hooks
-- `useDisplayMode()` / `useMaxHeight()` - Convenience hooks
-- `fastapps init` / `fastapps create` - CLI commands
+| Aspect                | Raw Apps SDK                            | FastApps        |
+| --------------------- | --------------------------------------- | --------------- |
+| **Setup**             | Manual server config, protocol handlers | Auto-configured |
+| **Registration**      | Manual tools + resources + metadata     | Auto-discovered |
+| **Asset Bundling**    | Custom build scripts                    | Built-in Vite   |
+| **Files per Widget**  | 5+ files                                | **2 files**     |
+| **Boilerplate Lines** | ~150+ lines                             | **~0 lines**    |
 
 **Convention over Configuration** - Zero config files, predictable structure, clear validation errors
 

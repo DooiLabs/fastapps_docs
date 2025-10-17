@@ -57,7 +57,7 @@ FastApps provides everything you need to build sophisticated ChatGPT apps:
 
 ## Solutions We Provide
 
-FastApps solves the three biggest challenges in building ChatGPT widgets:
+FastApps solves the three biggest challenges in building ChatGPT apps:
 
 **Complex setup**: Traditional approaches require extensive boilerplate, manual registration, and complex build systems. FastApps eliminates all of this with a simple two-file structure and automatic discovery.
 
@@ -79,9 +79,8 @@ Check out our [Getting Started Guide](/blog/tutorials/getting-started) for a com
 
 ```mermaid
 graph TD
-    A[ChatGPT] -->|MCP Protocol| B[FastApps]
+    A[ChatGPT] -->|MCP Protocol| C[Your App]
     
-    B --> C[Python Tool]
     C -->|execute returns data| D[React Component]
     
     D -->|useWidgetProps| E[Get Data]
