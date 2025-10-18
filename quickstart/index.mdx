@@ -151,9 +151,28 @@ You'll see:
 📡 MCP Server Endpoint: https://xyz.ngrok.io
 ```
 
-Now add your public URL to ChatGPT in **Settings \> Connectors**.
+## 7. Test
+
+### Option A) Test on ChatGPT
+
+Add your public URL with a "/mcp" to ChatGPT in **Settings \> Connectors**.
 
 For example: `https://<custom_endpoint>.ngrok-free.app/mcp`
+
+### Option B) Test on MCPJam Inspector
+
+Start up the MCPJam inspector:
+
+```
+npx @mcpjam/inspector@beta
+```
+
+![image.png](/images/image.png)
+
+Test your Apps SDK app with:
+
+- Tools tab. Deterministically call tools and view your UI
+- LLM playground to see your Apps SDK UI in a chat environment
 
 ## ✅ Ready for Next Steps
 
