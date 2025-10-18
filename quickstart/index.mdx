@@ -3,14 +3,25 @@ title: "FastApps Quick Start"
 description: "Spin up your first FastApps project and run a widget in under five minutes."
 ---
 
-Get your first ChatGPT widget running in 5 minutes!
-
-## 📁 What Gets Created
-
-When you run `fastapps create my-widget`, this structure is generated:
+## **1. Create Virtual Environment (Recommended)**
 
 ```
-my-widgets/
+python -m venv venv
+source venv/bin/activate    # macOS/Linux
+venv\Scripts\activate       # Windows
+```
+
+## **2. Install FastApps & Create Project**
+
+```
+pip install fastapps
+fastapps init my-app
+```
+
+When you run `fastapps init my-app`, this structure is generated:
+
+```
+my-app/
 ├── server/
 │   ├── __init__.py              # Empty file
 │   ├── main.py                  # Auto-discovery server (pre-configured)
@@ -26,19 +37,33 @@ my-widgets/
 └── package.json
 ```
 
-## 🚀 Create Your First Widget
+## **3. Install Dependencies**
 
-```bash
-pip install fastapps
+```
+cd my-app
+pip install -r requirements.txt
+npm install
+```
+
+## **4. Create Your First Widget**
+
+```
 fastapps create my-widget
 ```
 
-- Installs dependencies
-- Creates a MCP tool in `server/tools/`
-- Generates a React widget in `widgets/`
-- Wires everything into the FastApps runtime
+This adds to your project:
 
-## ✏️ Edit Your Widget Code
+```
+my-app/
+├── server/
+│   └── tools/
+│       └── my_widget_tool.py # ← Generated: MCP tool (backend)
+└── widgets/
+    └── my-widget/
+        └── index.jsx         # ← Generated: React component (frontend)
+```
+
+## 5. Edit Your Widget Code
 
 You only need to edit these 2 files:
 
@@ -99,40 +124,36 @@ export default function MyWidget() {
 
 That's it! These are the only files you need to write.
 
-## 🔨 Build and Run
+## 6. Build and Run
 
 ```bash
 # Build
 npm run build
 
-# Start server
-python server/main.py
+# Start dev server
+fastapps dev
 ```
 
-Your widget is now live at `http://localhost:8001`
+On first run, you'll be prompted for your ngrok auth token:
 
-## 🌐 Expose with ngrok (for ChatGPT Testing)
+- Get it free at: [<u>https://dashboard.ngrok.com/get-started/your-authtoken</u>](https://dashboard.ngrok.com/get-started/your-authtoken)
+- Token is saved and won't be asked again
 
-To test your widget in ChatGPT, you need to expose your local server to the internet using ngrok:
+You'll see:
 
-```bash
-# Install ngrok (if not already installed)
-# macOS: brew install ngrok
-# Windows: choco install ngrok  (or scoop install ngrok)
-# Or download from: https://ngrok.com/download
+```
+🚀 FastApps Development Server
+┌─────────┬─────────────────────────┐
+│ Local   │ http://0.0.0.0:8001    │
+│ Public  │ https://xyz.ngrok.io   │
+└─────────┴─────────────────────────┘
 
-# In a new terminal, expose your local server
-ngrok http 8001
+📡 MCP Server Endpoint: https://xyz.ngrok.io
 ```
 
-You will get a public URL that you can use to add your local server to ChatGPT in **Settings \> Connectors**.
+Now add your public URL to ChatGPT in **Settings \> Connectors**.
 
 For example: `https://<custom_endpoint>.ngrok-free.app/mcp`
-
-**Important**: Keep both terminals running:
-
-- **Terminal 1**: `python server/main.py` (your FastApps server)
-- **Terminal 2**: `ngrok http 8001` (public tunnel)
 
 ## ✅ Ready for Next Steps
 
