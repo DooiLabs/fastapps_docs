@@ -105,6 +105,13 @@
       "discord": "https://discord.gg/EvVNw8BH"
     }
   },
+  "seo": {
+  "metatags": {
+    "og:image": "/logo/light.png",
+    "twitter:image": "/logo/light.png",
+    "twitter:card": "summary_large_image"
+    }
+  },
   "styles": [
     "styles.css"
   ]
