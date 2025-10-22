@@ -1,3 +1,23 @@
+/* Sidebar Navigation Title Truncation */
+#sidebar-content .flex-1 div,
+#sidebar-content .group div,
+.sidebar-group-header h5,
+[id*="sidebar"] .flex-1 div {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+
+/* Mintlify specific sidebar navigation items */
+#sidebar-group li a .flex-1 div,
+#navigation-items .flex-1 div {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+
 /* FastApps Logo Styling */
 .logo img,
 .logo svg,
