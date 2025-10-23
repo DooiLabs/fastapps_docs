@@ -66,7 +66,8 @@
             "group": "Blog",
             "pages": [
               "blog/index",
-              "blog/chatgpt-apps-future"
+              "blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software",
+              "blog/inside-the-chatgpt-apps-sdk-how-it-actually-works"
             ]
           }
         ]
