@@ -1,0 +1,72 @@
+---
+title: "What Are Apps in ChatGPT and Why They're the Future of Software"
+description: "Learn what Apps in ChatGPT are and how OpenAI's Apps SDK powers a new generation of conversational, AI-driven software."
+canonical: "https://docs.fastapps.dev/blog/what-are-chatgpt-apps-and-why-they-are-the-future-of-software"
+publishDate: "2025-10-22"
+author: "Zach Park, Co-founder of Dooilabs"
+tags: ["Apps in ChatGPT"]
+---
+
+Written by [**Zach Park**](https://www.linkedin.com/in/zachhere/), Co-founder of Dooilabs
+
+🕒 3 min read • 🔗 [Copy URL](https://docs.fastapps.dev/blog/what-are-chatgpt-apps-and-why-they-are-the-future-of-software) • Oct 22, 2025
+
+## What Are Apps In ChatGPT and OpenAI Apps SDK
+
+[Apps in ChatGPT](https://openai.com/index/introducing-apps-in-chatgpt/) are lightweight web experiences that live directly inside the ChatGPT interface. Instead of switching to an external site or native program, users can interact with mini web apps like Spotify, Canva, or Zillow right within the chat. Each app runs as a sandboxed web component inside an iframe, powered by the Apps SDK. This SDK lets developers build with familiar web technologies such as HTML, CSS, and JavaScript (or frameworks like React and Vue), while ChatGPT handles rendering, data exchange, and context. From the user's perspective, it feels like a native part of the conversation: interactive cards and panels that respond to natural language.
+
+Under the hood, the Apps SDK builds on the [Model Context Protocol(MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) - the same protocol that connects GPT to external tools and APIs. The developer's MCP server defines tools for logic and resources for UI templates, and ChatGPT orchestrates the rest: invoking the right tool, hydrating the web component with structured output, and embedding the interface in the chat. OpenAI also provides [design and accessibility guidelines](https://developers.openai.com/apps-sdk/concepts/design-guidelines) to ensure every app looks and behaves consistently within ChatGPT. The result is a unified conversational ecosystem where developers can create small, powerful experiences that feel native to dialogue rather than detached from it.
+
+## From the App Store to the Chat Window
+
+When Apple launched the App Store in 2008, it changed the way we thought about software: instead of heavy installations, we had lightweight apps that followed us everywhere. Today we stand on the brink of another inflection point. These apps still run on servers and devices, but the experience now sits beyond the GUI layer, in the intelligence that understands and responds to what we say.
+
+ChatGPT apps arrive at a moment when computing is ripe for reinvention. For decades, software depended on tapping and swiping; now, natural language is becoming the primary interface. In practice, ChatGPT apps still rely on a back‑end server and a front‑end component that runs in an iframe inside ChatGPT. But from the user's perspective, the interaction flows through conversation rather than a discrete user interface. OpenAI has released the Apps SDK in preview and plans to open app submissions later this year. The promise is that, just as the App Store democratized mobile software, the ChatGPT ecosystem could democratize software that lives in dialogue.
+
+## How ChatGPT Apps Flip the Software Model
+
+Traditional apps integrate AI as a feature: voice search or predictive text sits inside an app that is otherwise built on a standard operating system. ChatGPT apps invert that relationship. Developers define tools and UI components, but the intelligence layer, the GPT mode, becomes the primary runtime. Each app is anchored by an MCP server that exposes tools the model can call, enforces authentication, and packages structured data with an HTML template for the client to render. Instead of simply returning text, the app can trigger actions, display interactive widgets, and update its state via window.openai calls. In this sense, the AI isn't just augmenting an app; it orchestrates the workflow itself.
+
+## Designing for Conversation, Not Screens
+
+Because ChatGPT understands language, images and even voice inputs, apps can span modalities. A single component can display a card with search results, accept follow‑up questions, call an external API via the MCP tool and return a refreshed dataset. Combined with ChatGPT's built‑in memory, this creates experiences that feel continuous: the app remembers context across turns and adapts its output accordingly.
+
+Each GPT App still has its own interface, built through the Apps SDK's component system, but it lives inside the conversation instead of outside it. That makes it lightweight, contextual, and instantly actionable. Today, users still need to connect or explicitly trigger a GPT App, but the direction is unmistakable. Over time, apps will feel less like separate tools and more like natural extensions of the dialogue itself. The interface becomes conversational, living inside the dialogue rather than outside it.
+
+## Why Developers Should Care
+
+One of the most compelling aspects of ChatGPT apps is the distribution potential. ChatGPT counts hundreds of millions of weekly users globally, giving developers a large audience from day one. While getting into the ecosystem does require building an MCP server, hosting it on a secure HTTPS endpoint and registering a connector via ChatGPT's developer mode, the friction is lower than traditional app stores. A single integration can instantly reach a global user base already inside ChatGPT.
+
+## Inside the ChatGPT App Ecosystem
+
+What makes the ecosystem truly novel is how apps cooperate. Each app defines one or more tools, functions the model can call, plus a corresponding UI component. ChatGPT orchestrates when to call which tool in MCP and merges the results into the conversation. Developers don't need to worry about drawing windows or implementing navigation; they focus on the task their tool performs and the data it returns. The best apps are conversational, time‑bound and visually succinct; they extend ChatGPT rather than replicate existing web workflows. Think booking a flight, ordering food or summarizing the morning's calendar - tasks that can be completed in a few turns and presented in a clear card. This agentic model turns ChatGPT into more than a host; it becomes the mediator that connects intent to action.
+
+## Monetization
+
+Every platform needs an economic model, and ChatGPT apps are no exception. OpenAI already offers subscription plans for ChatGPT, and the company has signaled that monetization policies for apps will be announced when the submission process opens. Although details are still forthcoming, it is easy to see the potential: usage‑based billing, revenue sharing and premium features could create a marketplace akin to the App Store, but oriented around actions rather than downloads. For developers, the allure is clear: a single integration could reach millions of users and generate revenue without the overhead of mobile app development.
+
+## Why OpenAI Is Betting Big
+
+OpenAI's ambitions go far beyond apps. Its collaboration with Jony Ive on a new hardware device hints at a world where users don't "open" apps. They simply talk to them. In that vision, the Apps SDK becomes the application layer, GPT functions as the operating system, and the device itself is just an input/output surface.
+
+The release of Atlas, OpenAI's new AI-powered browser, makes that direction even clearer. Atlas isn't just a browser; it's a conversational interface for the web. Instead of switching between tabs or typing queries into search boxes, users can ask GPT directly about what's on the page they're viewing. This blurs the boundary between browsing, searching, and reasoning - turning the browser into an intelligent workspace.
+
+That's why OpenAI is investing now in MCP servers, design guidelines, and developer policies: the apps and tools built today will soon live not only inside ChatGPT, but across hardware and browsers where GPT becomes the universal interaction layer.
+
+## The Next Software Era
+
+We're moving from a world where software lives on devices to one where it lives inside intelligence. ChatGPT apps still depend on servers, SDKs, and deployment pipelines, but the user experience is now rooted in conversation.
+
+Atlas accelerates that shift. By embedding GPT directly into the browser, it turns the act of browsing into an intelligent dialogue, letting users reason about information, take action, or connect data sources without ever leaving the page. It's the same philosophy that drives ChatGPT apps: context-aware, multimodal, and fluidly conversational.
+
+For developers, this opens a platform with global reach, layered on top of one of the most capable AI models ever built. For users, it promises smarter, more integrated workflows that unfold naturally in dialogue. Just as the App Store defined the smartphone era, GPT-powered apps, and now Atlas, are poised to define the intelligence era.
+
+## What's Still Hard And What's Coming Next
+
+As exciting as this ecosystem is, building ChatGPT Apps today still isn't easy.
+
+Developers have to wire up MCP servers, handle authentication, define tools, and manually decide how each app is triggered in a conversation. There's no simple framework for routing intent, managing context, or connecting multiple GPT Apps smoothly, which makes rapid experimentation difficult even for experienced teams.
+
+That's the gap we're closing.
+
+We built [FastApps](https://www.fastapps.org/), an open-source, zero-boilerplate framework for creating ChatGPT apps powered by OpenAI's Apps SDK and FastMCP. It lets developers focus on ideas, not infrastructure and get from concept to working prototype in minutes.
