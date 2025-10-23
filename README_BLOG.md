@@ -52,7 +52,7 @@ tags: ["tag1", "tag2", "tag3", "tag4", "tag5"]
 slug: "kebab-case-title"
 author: "FastApps Team"
 image: "/images/your-image.png"
-canonical: "https://docs.fastapps.dev/blog/your-slug"
+canonical: "https://www.fastapps.org/blog/your-slug"
 ---
 ```
 
