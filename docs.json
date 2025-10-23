@@ -66,25 +66,15 @@
             "group": "Blog",
             "pages": [
               "blog/index",
-              "blog/chatgpt-apps-future"
+              "blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software",
+              "blog/inside-the-chatgpt-apps-sdk-how-it-actually-works"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/DooiLabs/FastApps",
-          "icon": "github"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://discord.gg/EvVNw8BH",
-          "icon": "discord"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
@@ -96,6 +86,16 @@
       {
         "label": "Support",
         "href": "mailto:zach@dooilabs.com"
+      },
+      {
+        "label": "GitHub ⭐",
+        "href": "https://github.com/DooiLabs/FastApps",
+        "icon": "github"
+      },
+      {
+        "label": "Community",
+        "href": "https://discord.gg/EvVNw8BH",
+        "icon": "discord"
       }
     ]
   },

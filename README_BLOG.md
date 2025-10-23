@@ -28,12 +28,16 @@ fastapps_docs/
 
 **Format**: `blog/[kebab-case-title].mdx`
 
+**IMPORTANT**: Always use the blog post title converted to kebab-case for the filename. This ensures the URL matches the title exactly.
+
 **Examples**:
+- ✅ `inside-the-chatgpt-apps-sdk-how-it-actually-works.mdx` (matches title exactly)
+- ✅ `what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software.mdx` (matches title exactly)
 - ✅ `new-feature-launch.mdx`
 - ✅ `widget-system-update.mdx`
-- ✅ `authentication-security-update.mdx`
 - ❌ `New Feature Launch.mdx` (uppercase, spaces)
 - ❌ `new_feature_launch.mdx` (underscores)
+- ❌ `chatgpt-apps-sdk-inside.mdx` (doesn't match title)
 
 ### 2. Metadata (Frontmatter)
 
@@ -147,7 +151,7 @@ def example_function():
 
 ### 1. docs.json Update
 
-After adding a new blog post, you must update the `docs.json` file:
+After adding a new blog post, you must update the `docs.json` file. **ALWAYS add new posts to the end of the pages array**:
 
 ```json
 {
@@ -157,12 +161,19 @@ After adding a new blog post, you must update the `docs.json` file:
       "group": "Blog",
       "pages": [
         "blog/index",
+        "blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software",
+        "blog/inside-the-chatgpt-apps-sdk-how-it-actually-works",
         "blog/your-new-post"
       ]
     }
   ]
 }
 ```
+
+**IMPORTANT**: 
+- Use the exact filename (without .mdx extension) in the pages array
+- Always add new posts to the end of the list
+- This automatically makes them appear in "All posts" section
 
 ### 2. Blog Index Update
 
@@ -215,12 +226,13 @@ Before publishing a new blog post, check the following items:
 - [ ] Is the title within 60 characters?
 - [ ] Is the description within 160 characters?
 - [ ] Are all metadata fields correctly set?
-- [ ] Is the filename in kebab-case format?
+- [ ] Is the filename in kebab-case format **AND matches the title exactly**?
 - [ ] Is it written in English?
 - [ ] Is it an appropriate length (800-2500 words)?
 
 ### Technical
-- [ ] Has the new post been added to `docs.json`?
+- [ ] Has the new post been added to `docs.json` **at the end of the pages array**?
+- [ ] Does the filename in docs.json match the actual filename (without .mdx)?
 - [ ] Has the new post been added to `blog/index.mdx`?
 - [ ] Are images in the correct path?
 - [ ] Are links set to absolute paths?
@@ -264,4 +276,4 @@ If you encounter issues while writing a blog post:
 
 ---
 
-*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: 2025-10-22*
+*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: 2025-10-23*
