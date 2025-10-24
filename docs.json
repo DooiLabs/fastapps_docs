@@ -74,7 +74,18 @@
       }
     ],
     "global": {
-      "anchors": []
+      "anchors": [
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/EvVNw8BH",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Support",
+          "href": "mailto:zach@dooilabs.com",
+          "icon": "envelope"
+        }
+      ]
     }
   },
   "logo": {
@@ -84,18 +95,9 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:zach@dooilabs.com"
-      },
-      {
-        "label": "GitHub ⭐",
+        "label": "GitHub",
         "href": "https://github.com/DooiLabs/FastApps",
         "icon": "github"
-      },
-      {
-        "label": "Community",
-        "href": "https://discord.gg/EvVNw8BH",
-        "icon": "discord"
       }
     ]
   },
