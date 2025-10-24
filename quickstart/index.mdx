@@ -3,20 +3,29 @@ title: "FastApps Quick Start"
 description: "Spin up your first FastApps project and run a widget in under five minutes."
 ---
 
-## **1. Create Virtual Environment (Recommended)**
+## Quick Start
 
-```
-python -m venv venv
-source venv/bin/activate    # macOS/Linux
-venv\Scripts\activate       # Windows
-```
+Get started with FastApps in just 3 steps:
 
-## **2. Install FastApps & Create Project**
-
-```
+```bash
+# 1. Install
 pip install fastapps
+
+# 2. Create project (includes example widget + auto npm install)
 fastapps init my-app
+
+# 3. Run
+cd my-app
+fastapps dev
 ```
+
+That's it! Your example widget is now running at a public URL.
+
+On first run, you'll need an [ngrok auth token](https://dashboard.ngrok.com/get-started/your-authtoken) (free).
+
+---
+
+## Project Structure
 
 When you run `fastapps init my-app`, this structure is generated:
 
@@ -37,33 +46,19 @@ my-app/
 └── package.json
 ```
 
-## **3. Install Dependencies**
+---
 
-```
-cd my-app
-pip install -r requirements.txt
-npm install
-```
+## Creating More Widgets
 
-## **4. Create Your First Widget**
+You can create additional widgets anytime:
 
-```
-fastapps create my-widget
+```bash
+fastapps create another-widget
 ```
 
-This adds to your project:
+---
 
-```
-my-app/
-├── server/
-│   └── tools/
-│       └── my_widget_tool.py # ← Generated: MCP tool (backend)
-└── widgets/
-    └── my-widget/
-        └── index.jsx         # ← Generated: React component (frontend)
-```
-
-## 5. Edit Your Widget Code
+## Edit Your Widget Code
 
 You only need to edit these 2 files:
 
@@ -122,57 +117,32 @@ export default function MyWidget() {
 }
 ```
 
-That's it! These are the only files you need to write.
+**That's it! These are the only files you need to write.**
 
-## 6. Build and Run
+---
+
+## Test Your App
+
+**Option A: Test on MCPJam Inspector**
+
+Add your public URL + /mcp to ChatGPT:
+Example: https://xyz.ngrok-free.app/mcp
 
 ```bash
-# Build
-npm run build
-
-# Start dev server
-fastapps dev
-```
-
-On first run, you'll be prompted for your ngrok auth token:
-
-- Get it free at: [<u>https://dashboard.ngrok.com/get-started/your-authtoken</u>](https://dashboard.ngrok.com/get-started/your-authtoken)
-- Token is saved and won't be asked again
-
-You'll see:
-
-```
-🚀 FastApps Development Server
-┌─────────┬─────────────────────────┐
-│ Local   │ http://0.0.0.0:8001    │
-│ Public  │ https://xyz.ngrok.io   │
-└─────────┴─────────────────────────┘
-
-📡 MCP Server Endpoint: https://xyz.ngrok.io
-```
-
-## 7. Test
-
-### Option A) Test on ChatGPT
-
-Add your public URL with a "/mcp" to ChatGPT in **Settings \> Connectors**.
-
-For example: `https://<custom_endpoint>.ngrok-free.app/mcp`
-
-### Option B) Test on MCPJam Inspector
-
-Start up the MCPJam inspector:
-
-```
 npx @mcpjam/inspector@latest
 ```
 
+Test your app with:
+- Tools tab: Deterministically call tools and view your UI
+- LLM playground: See your Apps SDK UI in a chat environment
+
 ![image.png](/images/image.png)
 
-Test your Apps SDK app with:
+**Option B: Test on ChatGPT**
 
-- Tools tab. Deterministically call tools and view your UI
-- LLM playground to see your Apps SDK UI in a chat environment
+Add your public URL + /mcp to ChatGPT's "Settings > Connectors":
+
+Example: `https://xyz.ngrok-free.app/mcp`
 
 ## ✅ Ready for Next Steps
 
