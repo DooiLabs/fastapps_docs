@@ -1,0 +1,16 @@
+{
+  "name": "fastapps-docs",
+  "version": "1.0.0",
+  "description": "FastApps Documentation",
+  "scripts": {
+    "build": "mintlify dev",
+    "build:prod": "mintlify build",
+    "generate-sitemap": "node generate-sitemap.js",
+    "prebuild": "npm run generate-sitemap",
+    "prebuild:prod": "npm run generate-sitemap"
+  },
+  "devDependencies": {},
+  "keywords": ["documentation", "mintlify", "fastapps"],
+  "author": "FastApps Team",
+  "license": "MIT"
+}
