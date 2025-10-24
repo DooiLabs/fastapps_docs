@@ -52,7 +52,7 @@ tags: ["tag1", "tag2", "tag3", "tag4", "tag5"]
 slug: "kebab-case-title"
 author: "FastApps Team"
 image: "/images/your-image.png"
-canonical: "https://docs.fastapps.dev/blog/your-slug"
+canonical: "https://www.fastapps.org/blog/your-slug"
 ---
 ```
 
@@ -276,4 +276,24 @@ If you encounter issues while writing a blog post:
 
 ---
 
-*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: 2025-10-23*
+## 📚 Current Blog Posts
+
+*Auto-generated list of current blog posts (October 24, 2025)*
+
+
+### 📝 Published Posts (2 posts)
+
+1. **Inside The Chatgpt Apps Sdk How It Actually Works**
+   - **URL**: `/blog/inside-the-chatgpt-apps-sdk-how-it-actually-works`
+   - **Date**: Oct 24, 2025
+   - **Author**: FastApps Team
+
+2. **What Are Apps In Chatgpt And Why They Are The Future Of Software**
+   - **URL**: `/blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software`
+   - **Date**: Oct 24, 2025
+   - **Author**: FastApps Team
+
+
+---
+
+*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: October 24, 2025*
