@@ -134,11 +134,7 @@
       "twitter:creator": "@FastAppsDev",
       "twitter:image": "/images/logo.png",
       "article:author": "FastApps Team",
-<<<<<<< HEAD
       "article:publisher": "https://fastapps.org",
-=======
-      "article:publisher": "https://www.fastapps.org",
->>>>>>> 21bbf9699440332b82d8e72c2aa709e0252f05f7
       "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     }
   },
