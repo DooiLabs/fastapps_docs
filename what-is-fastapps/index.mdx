@@ -65,58 +65,14 @@ FastApps solves the three biggest challenges in building ChatGPT apps:
 
 **API integration**: Connecting to external APIs while handling security policies and data flow is challenging. FastApps handles CSP configuration and provides a clean data flow from Python to React.
 
-## Getting Started
-
-Ready to build your first widget? Follow our step-by-step guide:
-
-1. **Install FastApps**: `pip install fastapps`
-2. **Create a project**: `fastapps init my-app`
-3. **Generate a widget**: `fastapps create my-widget`
-
-Check out our [Getting Started Guide](/blog/tutorials/getting-started) for a complete walkthrough, or explore our [examples gallery](/docs/examples) to see real-world applications.
-
-## Architecture
-
-```mermaid
-graph TD
-    A[ChatGPT] -->|MCP Protocol| C[Your App]
-    
-    C -->|execute returns data| D[React Component]
-    
-    D -->|useWidgetProps| E[Get Data]
-    D -->|useWidgetState| F[Manage State]
-    D -->|useOpenAiGlobal| G[Access ChatGPT]
-    
-    H[Auto-Discovery] -->|Finds BaseWidget| C
-    I[WidgetBuilder] -->|Builds React| D
-    
-    style A fill:#e1f5fe
-    style C fill:#fff3e0
-    style D fill:#e8f5e8
-```
-
-## What Makes FastApps Different?
-
-Most frameworks force you to deal with:
-
-- ❌ Complex project configuration
-- ❌ Manual widget registration
-- ❌ Boilerplate setup code
-- ❌ Build system configuration
-
-FastApps eliminates all of that:
-
-- ✅ **Auto-discovery**: Widgets are automatically found and registered
-- ✅ **Only two files per widget**: One Python file, one React file. That's it.
-- ✅ **CLI scaffolding**: Generate widgets instantly
-- ✅ **Type-safe**: Pydantic for Python, TypeScript for React
-- ✅ **Apps SDK hooks support**: Use hooks like `useWidgetProps()` and `useWidgetState()`
-
 ## Next Steps
 
-Now that you understand what FastApps is, explore these topics:
+<CardGroup cols={2}>
+  <Card title="Introduction" icon="book-open" href="/introduction/index">
+    Learn more about FastApps architecture and concepts
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/quickstart/index">
+    Get up and running with FastApps in minutes
+  </Card>
+</CardGroup>
 
-1. [**Introduction**](/docs/introduction) - Learn about the framework architecture
-2. [**Quick Start**](/docs/quickstart) - Get up and running in minutes
-3. [**Building Widgets**](/docs/widgets) - Create your first interactive component
-4. [**Server**](/docs/server) - Develop Python backends for your widgets
