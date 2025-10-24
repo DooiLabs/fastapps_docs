@@ -8,6 +8,11 @@ description: "Spin up your first FastApps project and run a widget in under five
 Get started with FastApps in just 3 steps:
 
 ```bash
+# 0. Set virtual environment (recommended)
+python -m venv .venv
+source .venv/bin/activate # Mac/Linux
+.venv\Scripts\Activate.ps1 # Windows PowerShell
+
 # 1. Install
 pip install fastapps
 
@@ -125,14 +130,14 @@ export default function MyWidget() {
 
 **Option A: Test on MCPJam Inspector**
 
-Add your public URL + /mcp to ChatGPT:
-Example: https://xyz.ngrok-free.app/mcp
+Add your public URL + /mcp to ChatGPT: Example: https://xyz.ngrok-free.app/mcp
 
 ```bash
 npx @mcpjam/inspector@latest
 ```
 
 Test your app with:
+
 - Tools tab: Deterministically call tools and view your UI
 - LLM playground: See your Apps SDK UI in a chat environment
 
@@ -140,7 +145,7 @@ Test your app with:
 
 **Option B: Test on ChatGPT**
 
-Add your public URL + /mcp to ChatGPT's "Settings > Connectors":
+Add your public URL + /mcp to ChatGPT's "Settings \> Connectors":
 
 Example: `https://xyz.ngrok-free.app/mcp`
 
