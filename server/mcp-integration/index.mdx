@@ -1,0 +1,196 @@
+---
+title: "MCP Integration"
+description: "Integrate other MCP servers as APIs using Metorial"
+---
+
+## Overview
+
+FastApps allows you to integrate external MCP servers as APIs in your widgets using [Metorial](https://metorial.com/). Metorial is an open-source integration platform that provides access to 600+ MCP servers with enterprise-grade observability and scaling.
+
+With FastApps + Metorial integration, you can:
+- Access hundreds of verified MCP servers (Slack, Gmail, Google Calendar, etc.)
+- Use external MCP servers directly as APIs in your tools
+- Get instant deployment with built-in scaling
+- Monitor and debug with detailed logging
+
+---
+
+## Quick Setup
+
+### 1. Generate Integration File
+
+Run the FastApps CLI command to generate the Metorial integration:
+
+```bash
+fastapps use metorial
+```
+
+This creates a `metorial_mcp.py` file under the `/api` folder in your project.
+
+### 2. Configure Environment Variables
+
+Add your Metorial API key, OpenAI API key, and deployment ID to your environment:
+
+```bash
+# .env
+METORIAL_API_KEY=your_metorial_api_key
+OPENAI_API_KEY=your_openai_api_key
+METORIAL_DEPLOYMENT_ID=your_deployment_id
+```
+
+Get your Metorial API key and deployment ID at [https://metorial.com/](https://metorial.com/)
+
+### 3. Use in Your Widgets
+
+Import and use the Metorial integration in your FastApps tools:
+
+```python
+from server.api.metorial_mcp import call_metorial
+
+# Use in your widget
+result = await call_metorial("Search Hackernews for latest AI discussions")
+```
+
+---
+
+## Generated File Structure
+
+When you run `fastapps use metorial`, a `metorial_mcp.py` file is created in the `/server/api` folder:
+
+**`/server/api/metorial_mcp.py`**
+
+```python
+import os
+import asyncio
+from metorial import Metorial
+from openai import AsyncOpenAI
+
+
+async def call_metorial(
+    message: str,
+    deployment_id: str = None,
+    model: str = "gpt-4o",
+    max_steps: int = 25
+):
+    # Get credentials from environment
+    metorial_api_key = os.getenv('METORIAL_API_KEY')
+    openai_api_key = os.getenv('OPENAI_API_KEY')
+    deployment_id = deployment_id or os.getenv('METORIAL_DEPLOYMENT_ID')
+    
+    if not all([metorial_api_key, openai_api_key, deployment_id]):
+        raise ValueError("Missing environment variables: METORIAL_API_KEY, OPENAI_API_KEY, METORIAL_DEPLOYMENT_ID")
+    
+    # Initialize clients
+    metorial = Metorial(api_key=metorial_api_key)
+    openai = AsyncOpenAI(api_key=openai_api_key)
+    
+    # Run query
+    response = await metorial.run(
+        message=message,
+        server_deployments=[deployment_id],
+        client=openai,
+        model=model,
+        max_steps=max_steps
+    )
+    
+    return response.text
+
+```
+
+### What This File Does
+
+The `metorial_mcp.py` file provides a simple API wrapper to:
+1. **Load Credentials** - Automatically loads API keys and deployment ID from environment variables
+2. **Simple Interface** - Provides a clean `call_metorial()` function with minimal parameters
+3. **Handle Authentication** - Validates required environment variables
+4. **Return Results** - Processes and returns text responses from MCP servers
+
+---
+
+## Using MCP Servers in Widgets
+
+### Basic Example
+
+Here's how to integrate external MCP servers in your FastApps widget:
+
+```python
+from fastapps import BaseWidget
+from pydantic import BaseModel, Field
+from server.api.metorial_mcp import call_metorial
+
+class NewsSearchInput(BaseModel):
+    query: str = Field(..., description="Search query for news")
+
+class NewsSearchWidget(BaseWidget):
+    identifier = "news-search"
+    title = "Search News"
+    input_schema = NewsSearchInput
+    invoking = "Searching..."
+    invoked = "Search complete!"
+    
+    async def execute(self, input_data: NewsSearchInput, ctx):
+        # Simple usage - uses default deployment ID from environment
+        result = await call_metorial(f"Search for: {input_data.query}")
+        
+        return {
+            "query": input_data.query,
+            "results": result
+        }
+```
+
+### Custom Deployment
+
+Use a specific deployment ID or customize the model:
+
+```python
+from fastapps import BaseWidget
+from pydantic import BaseModel, Field
+from server.api.metorial_mcp import call_metorial
+
+class CustomSearchInput(BaseModel):
+    query: str = Field(..., description="Search query")
+    use_mini: bool = Field(default=False, description="Use mini model")
+
+class CustomSearchWidget(BaseWidget):
+    identifier = "custom-search"
+    title = "Custom Search"
+    input_schema = CustomSearchInput
+    
+    async def execute(self, input_data: CustomSearchInput, ctx):
+        # Customize deployment and model
+        result = await call_metorial(
+            message=f"Find latest: {input_data.query}",
+            deployment_id="custom_deployment_id",  # Optional: override default
+            model="gpt-4o-mini" if input_data.use_mini else "gpt-4o",
+            max_steps=10
+        )
+        
+        return {
+            "query": input_data.query,
+            "results": result
+        }
+```
+
+
+## Learn More
+
+For complete documentation and advanced features, visit:
+
+**Metorial Documentation**: [https://metorial.com/](https://metorial.com/)
+
+---
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Tool Basics" icon="book" href="/server/basics/index">
+    Back to Tool Basics
+  </Card>
+  <Card title="API Integration" icon="plug" href="/server/integration/index">
+    External API Integration
+  </Card>
+  <Card title="Advanced Patterns" icon="wand-magic-sparkles" href="/server/advanced/index">
+    Advanced Tool Patterns
+  </Card>
+</CardGroup>
+

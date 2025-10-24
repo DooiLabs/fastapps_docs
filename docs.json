@@ -40,6 +40,7 @@
             "pages": [
               "server/index",
               "server/basics/index",
+              "server/mcp-integration/index",
               "server/integration/index",
               "server/advanced/index"
             ]
