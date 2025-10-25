@@ -1,13 +1,23 @@
 ---
-title: "What is FastApps?"
-description: "The fast, Pythonic way to build ChatGPT Apps"
+title: "How ChatGPT apps work"
+description: "Understand how ChatGPT apps work, and how to build one with FastApps"
 ---
+<img src="/images/howappssdk.png" alt="How Apps SDK works" width="100%" />
 
-FastApps is the most effective and fast way to build Apps in ChatGPT, utilizing the FastMCP framework specialized for the apps sdk.
+## How ChatGPT apps work
 
-Here's a simple Hello World widget to show how easy it is:
 
-**Python Backend** (`server/tools/hello_tool.py`)
+At its core, a ChatGPT app is an MCP server that exposes multiple tools. Each tools return structured contents including a widget.
+
+Specifically, each tools include
+- Metadata : Description of the tool (so that the model could call the right tool at the right time), input schema, the message to be displayed before/after the tool is executed, etc.
+- Widgets : This is the component that is being displayed on the screen.
+
+
+## Building ChatGPT apps
+With FastApps, you could simply use the prebuilt library to resgister tools and widgets.
+
+**Tools** (`server/tools/hello_tool.py`)
 
 ```python
 from fastapps import BaseWidget, Field
@@ -28,7 +38,7 @@ class HelloTool(BaseWidget):
         }
 ```
 
-**React Frontend** (`widgets/hello/index.jsx`)
+**Widgets** (`widgets/hello/index.jsx`)
 
 ```jsx
 import React from 'react';
@@ -45,7 +55,7 @@ export default function HelloWidget() {
 }
 ```
 
-## Key Features
+## What FastApps provide
 
 FastApps provides everything you need to build sophisticated ChatGPT apps:
 
@@ -54,40 +64,13 @@ FastApps provides everything you need to build sophisticated ChatGPT apps:
 **CLI commands**: Just type `fastapps init` to set up the whole project. Use `fastapps create mywidget` to make an widget. Everything from component creation to MCP tool registeration will be set up automatically.
 
 **Simple auth**: Authentication and other advanced features are all handled with our simple decorators. Just add `@auth_required` and you're done.
-## Architecture
-```
-┌─────────────────────────────────────────┐
-│           ChatGPT Interface             │
-└─────────────────┬───────────────────────┘
-                  │ MCP Protocol
-                  ▼
-┌─────────────────────────────────────────┐
-│         FastApps Framework                │
-├─────────────────────────────────────────┤
-│  Python Backend (Your Tool)             │
-│  ├── Input validation (Pydantic)        │
-│  ├── Business logic                     │
-│  └── Data preparation                   │
-└─────────────────┬───────────────────────┘
-                  │ Props
-                  ▼
-┌─────────────────────────────────────────┐
-│  React Frontend (Your Component)        │
-│  ├── useWidgetProps() - Get data        │
-│  ├── useWidgetState() - Manage state    │
-│  └── Render UI                          │
-└─────────────────────────────────────────┘
-```
 
 
 ## Next Steps
 
-<CardGroup cols={2}>
-  <Card title="Introduction" icon="book-open" href="/introduction/index">
-    Learn more about FastApps architecture and concepts
-  </Card>
-  <Card title="Quick Start" icon="rocket" href="/quickstart/index">
-    Get up and running with FastApps in minutes
-  </Card>
-</CardGroup>
+
+<Card title="Quick Start" icon="rocket" href="/quickstart/index">
+  Get up and running with FastApps in minutes
+</Card>
+
 
