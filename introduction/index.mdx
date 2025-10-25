@@ -391,32 +391,6 @@ export default function MyWidget() {
 - ✅ Asset building with Vite and component mounting
 - ✅ Auto-discovery from your project structure
 
-## Architecture
-
-```
-┌─────────────────────────────────────────┐
-│           ChatGPT Interface             │
-└─────────────────┬───────────────────────┘
-                  │ MCP Protocol
-                  ▼
-┌─────────────────────────────────────────┐
-│         FastApps Framework                │
-├─────────────────────────────────────────┤
-│  Python Backend (Your Tool)             │
-│  ├── Input validation (Pydantic)        │
-│  ├── Business logic                     │
-│  └── Data preparation                   │
-└─────────────────┬───────────────────────┘
-                  │ Props
-                  ▼
-┌─────────────────────────────────────────┐
-│  React Frontend (Your Component)        │
-│  ├── useWidgetProps() - Get data        │
-│  ├── useWidgetState() - Manage state    │
-│  └── Render UI                          │
-└─────────────────────────────────────────┘
-```
-
 ## How It Works
 
 ### Structure

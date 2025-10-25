@@ -54,16 +54,31 @@ FastApps provides everything you need to build sophisticated ChatGPT apps:
 **CLI commands**: Just type `fastapps init` to set up the whole project. Use `fastapps create mywidget` to make an widget. Everything from component creation to MCP tool registeration will be set up automatically.
 
 **Simple auth**: Authentication and other advanced features are all handled with our simple decorators. Just add `@auth_required` and you're done.
+## Architecture
+```
+┌─────────────────────────────────────────┐
+│           ChatGPT Interface             │
+└─────────────────┬───────────────────────┘
+                  │ MCP Protocol
+                  ▼
+┌─────────────────────────────────────────┐
+│         FastApps Framework                │
+├─────────────────────────────────────────┤
+│  Python Backend (Your Tool)             │
+│  ├── Input validation (Pydantic)        │
+│  ├── Business logic                     │
+│  └── Data preparation                   │
+└─────────────────┬───────────────────────┘
+                  │ Props
+                  ▼
+┌─────────────────────────────────────────┐
+│  React Frontend (Your Component)        │
+│  ├── useWidgetProps() - Get data        │
+│  ├── useWidgetState() - Manage state    │
+│  └── Render UI                          │
+└─────────────────────────────────────────┘
+```
 
-## Solutions We Provide
-
-FastApps solves the three biggest challenges in building ChatGPT apps:
-
-**Complex setup**: Traditional approaches require extensive boilerplate, manual registration, and complex build systems. FastApps eliminates all of this with a simple two-file structure and automatic discovery.
-
-**State management**: Managing persistent state across ChatGPT sessions is complex. We've transformed OpenAI's Apps SDK functions into a clean library. Simply import and use hooks like `useWidgetProps()`, `useWidgetState()`, and `useOpenAiGlobal()` without dealing with the raw SDK complexity.
-
-**API integration**: Connecting to external APIs while handling security policies and data flow is challenging. FastApps handles CSP configuration and provides a clean data flow from Python to React.
 
 ## Next Steps
 
