@@ -25,7 +25,7 @@ a[href="/"] img,
 a[href="/"] svg,
 .navbar-brand img,
 .navbar-brand svg {
-  height: 60px !important;
+  height: 36px !important;
   width: auto !important;
   max-height: none !important;
 }
@@ -33,12 +33,12 @@ a[href="/"] svg,
 .logo,
 a[href="/"],
 .navbar-brand {
-  height: 60px !important;
+  height: 36px !important;
   display: flex !important;
   align-items: center !important;
   padding: 0 !important;
   margin: 0 !important;
-  margin-left: -32px !important;
+  margin-left: -4px !important;
 }
 
 /* Keep navbar at original height */
