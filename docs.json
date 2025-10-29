@@ -30,8 +30,7 @@
             "pages": [
               "widgets/index",
               "widgets/basics/index",
-              "widgets/react-hooks/index",
-              "widgets/advanced-patterns/index"
+              "widgets/react-hooks/index"
             ]
           },
           {
@@ -39,22 +38,13 @@
             "pages": [
               "server/index",
               "server/basics/index",
-              "server/mcp-integration/index",
-              "server/integration/index",
-              "server/advanced/index"
+              "server/mcp-integration/index"
             ]
           },
           {
             "group": "Authentication",
             "pages": [
-              "auth/index",
-              "auth/server-configuration/index",
-              "auth/decorators/index",
-              "auth/providers/index",
-              "auth/user-context/index",
-              "auth/examples/index",
-              "auth/advanced/index",
-              "auth/troubleshooting/index"
+              "auth/index"
             ]
           }
         ]
@@ -76,14 +66,14 @@
     "global": {
       "anchors": [
         {
+          "anchor": "Website",
+          "href": "https://www.fastapps.org/",
+          "icon": "globe"
+        },
+        {
           "anchor": "Community",
           "href": "https://discord.gg/EvVNw8BH",
           "icon": "discord"
-        },
-        {
-          "anchor": "Support",
-          "href": "mailto:zach@dooilabs.com",
-          "icon": "envelope"
         }
       ]
     }
