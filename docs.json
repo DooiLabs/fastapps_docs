@@ -22,7 +22,8 @@
           {
             "group": "Getting Started",
             "pages": [
-              "quickstart/index"
+              "quickstart/index",
+              "deployment/index"
             ]
           },
           {
