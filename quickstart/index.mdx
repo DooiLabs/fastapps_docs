@@ -8,25 +8,20 @@ description: "Spin up your first FastApps project and run a widget in under five
 Get started with FastApps in just 3 steps:
 
 ```bash
-# 0. Set virtual environment (recommended)
-python -m venv .venv
-source .venv/bin/activate # Mac/Linux
-.venv\Scripts\Activate.ps1 # Windows PowerShell
+# 0. Install using uv (recommended)
+uv tool install fastapps
 
-# 1. Install
-pip install fastapps
-
-# 2. Create project (includes example widget + auto npm install)
+# 1. Create project (includes example widget + auto npm install)
 fastapps init my-app
 
-# 3. Run
+# 2. Run
 cd my-app
 fastapps dev
 ```
 
 That's it! Your example widget is now running at a public URL.
-
-On first run, you'll need an [ngrok auth token](https://dashboard.ngrok.com/get-started/your-authtoken) (free).
+The public URL is temporary, and is issued with [cloudflared](https://github.com/cloudflare/cloudflared) behind the scenes.
+You can view your widget at `https://<your-subdomain>.trycloudflare.com/mcp` and add it to ChatGPT under "Settings \> Connectors".
 
 ---
 
@@ -128,9 +123,13 @@ export default function MyWidget() {
 
 ## Test Your App
 
+With your app running (`fastapps dev`) and public URL is ready, \
+you have two options to test your widget.
+
 **Option A: Test on MCPJam Inspector**
 
-Add your public URL + /mcp to ChatGPT: Example: https://xyz.ngrok-free.app/mcp
+Add your public URL + /mcp to ChatGPT : \
+Example URL : `https://<your-subdomain>.trycloudflare.com/mcp`
 
 ```bash
 npx @mcpjam/inspector@latest
@@ -145,9 +144,8 @@ Test your app with:
 
 **Option B: Test on ChatGPT**
 
-Add your public URL + /mcp to ChatGPT's "Settings \> Connectors":
-
-Example: `https://xyz.ngrok-free.app/mcp`
+Add your public URL + /mcp to ChatGPT's "Settings \> Connectors" : \
+Example URL : `https://<your-subdomain>.trycloudflare.com/mcp`
 
 ## ✅ Ready for Next Steps
 
