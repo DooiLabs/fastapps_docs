@@ -1,0 +1,215 @@
+---
+title: "Deploy FastApps Server"
+description: "Deploy your first FastApps server using FastApps Cloud commands."
+---
+
+## Quick Start
+
+Deploying your FastApps server to production is simple:
+
+```bash
+fastapps cloud deploy
+```
+
+That's it! The CLI will guide you through the entire process.
+
+---
+
+## What Happens During Deployment
+
+When you run `fastapps cloud deploy`, here's what happens automatically:
+
+### 1. **Project Validation**
+The CLI validates your project structure to ensure all required files exist:
+- `package.json` - Node.js dependencies
+- `requirements.txt` - Python dependencies
+- `server/` directory with `main.py`
+- `widgets/` directory with your widget code
+
+### 2. **Widget Build**
+If your `assets/` directory doesn't exist or is outdated, you'll be prompted:
+
+```
+⚠️  Assets directory not found
+Press Enter to confirm (default: yes)
+Build widgets now? (Y/n):
+```
+
+Just press **Enter** to build automatically. The CLI runs `npm run build` to compile your React widgets into optimized HTML bundles.
+
+### 3. **Authentication Check**
+If you haven't logged in yet, you'll be prompted to authenticate:
+
+```bash
+fastapps cloud login
+```
+
+This opens your browser for secure OAuth authentication with FastApps Team.
+
+### 4. **Project Selection**
+
+If this is your first deployment from this directory, you'll see:
+
+```
+⚠️  No project linked to this directory
+
+1. Create new project
+2. Link to existing project
+
+Choose [1-2]:
+```
+
+**Option 1: Create New Project**
+
+You'll be asked to provide a project slug (URL-friendly identifier):
+
+```
+Project slug requirements:
+  • Lowercase letters, numbers, and hyphens only
+  • 3-63 characters long
+  • Must start and end with letter or number
+
+Project slug [my-app-a1b2]:
+```
+
+The CLI auto-suggests a slug based on your directory name. Just press Enter to accept, or type your own.
+
+**Option 2: Link to Existing Project**
+
+Select from your existing FastApps Cloud projects to deploy updates.
+This will automatically happen on subsequent deployments from the same directory.
+
+### 5. **Deployment Summary**
+
+Before deploying, you'll see a summary:
+
+```
+Deployment Summary
+ Project     my-app-a1b2
+ Project ID  6fd19c55-319a-45ce-ab05-d9b39f5569b3
+ Widgets     1
+ Server      https://cloud-api.dooi.app
+
+Press Enter to confirm (default: yes)
+Deploy to FastApps Cloud? (Y/n):
+```
+
+Press **Enter** to continue.
+
+### 6. **Package & Deploy**
+
+The CLI packages your app and deploys it securely:
+
+```
+Packaging deployment artifacts...
+✓ Package created (0.09 MB)
+
+Deploying to FastApps Cloud...
+⠋ Deploying safely...
+```
+
+Your code is:
+- Compressed into a secure tarball
+- Uploaded to FastApps Cloud via encrypted connection
+- Deployed to Vercel's serverless infrastructure
+- Assigned a custom `*.dooi.app` subdomain
+
+### 7. **Success!**
+
+Once deployed, you'll see your live URL:
+
+```
+🚀 Deployment Complete
+
+Your app is live at:
+https://my-app-a1b2.dooi.app
+
+Deployment ID: dep_abc123
+Project: my-app-a1b2 (6fd19c55-319a-45ce-ab05-d9b39f5569b3)
+
+Test endpoints:
+  • https://my-app-a1b2.dooi.app/
+```
+
+---
+
+## Quick Deployment Flags
+
+Skip confirmations and build steps with optional flags:
+
+```bash
+# Skip all confirmation prompts (auto-confirm with 'yes')
+fastapps cloud deploy --yes
+
+# Skip widget build step (use existing assets/)
+fastapps cloud deploy --no-build
+
+# Deploy to specific project (override linked project)
+fastapps cloud deploy --project-id my-app
+
+# Combine flags
+fastapps cloud deploy --yes --no-build
+```
+
+---
+
+## Understanding Project Slugs
+
+A **project slug** is a URL-friendly identifier for your project:
+
+✅ **Valid slugs:**
+- `my-app`
+- `todo-app-2024`
+- `user-dashboard`
+- `api-v2`
+
+❌ **Invalid slugs:**
+- `My App` (no spaces)
+- `my_app` (no underscores)
+- `my-app-` (can't end with hyphen)
+- `-my-app` (can't start with hyphen)
+- `ab` (too short, min 3 characters)
+
+The CLI automatically converts your input to a valid slug:
+- Converts to lowercase
+- Replaces spaces/underscores with hyphens
+- Removes invalid characters
+
+---
+
+## Deployment Lifecycle
+
+### First Deployment
+1. Create project (gets assigned a unique ID)
+2. Directory is automatically linked to project
+3. App is deployed and assigned `*.dooi.app` subdomain
+
+### Subsequent Deployments
+1. CLI detects linked project
+2. Deploys update to same project
+3. Domain remains unchanged
+4. Zero-downtime deployment
+
+### Cleanup
+After deployment completes (success or failure), the CLI automatically:
+- Deletes temporary build artifacts
+- Cleans up the packaged tarball
+- Even if you cancel (Ctrl+C), cleanup happens. no worries!
+
+---
+
+## What's Next?
+
+Now that your app is deployed, dive deeper into building powerful FastApps :
+
+<CardGroup cols={3}>
+  <Card title="Tool Basics" icon="book" href="/server/basics/index">
+    Add more functionality to your FastApps server
+  </Card>
+  <Card title="Widget customization" icon="paintbrush" href="/widgets/index">
+    Learn how to create rich, interactive UIs with full React support
+  </Card>
+  <Card title="Authentication" icon="lock" href="/auth/index">
+    Secure your FastApps with user OAuth 2.0 providers
+  </Card>
+</CardGroup>
