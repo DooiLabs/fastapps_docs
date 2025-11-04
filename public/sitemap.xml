@@ -4,122 +4,77 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- Auto-generated sitemap - Generated on 2025-10-24T05:42:38.751Z -->
+<!-- Auto-generated sitemap - Generated on 2025-11-04T11:19:36.701Z -->
 
 
 <url>
-  <loc>https://www.fastapps.org/</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/auth</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/auth</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/auth/advanced</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/blog</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/auth/decorators</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/auth/examples</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/auth/providers</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/auth/server-configuration</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/auth/troubleshooting</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/auth/user-context</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/blog</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/blog/inside-the-chatgpt-apps-sdk-how-it-actually-works</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/blog/inside-the-chatgpt-apps-sdk-how-it-actually-works</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/introduction</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/deployment</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/quickstart</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/quickstart</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/server</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/server</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/server/advanced</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/server/basics</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/server/basics</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/server/mcp-integration</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/server/integration</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/what-is-fastapps</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/what-is-fastapps</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/widgets</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/widgets</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/widgets/basics</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://www.fastapps.org/widgets/advanced-patterns</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/widgets/basics</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://www.fastapps.org/widgets/react-hooks</loc>
-  <lastmod>2025-10-24T05:42:38.751Z</lastmod>
+  <loc>https://docs.fastapps.org/widgets/react-hooks</loc>
+  <lastmod>2025-11-04T11:19:36.701Z</lastmod>
   <priority>0.80</priority>
 </url>
 

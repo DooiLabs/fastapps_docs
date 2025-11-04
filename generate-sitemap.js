@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // 설정
-const BASE_URL = 'https://www.fastapps.org';
+const BASE_URL = 'https://docs.fastapps.org';
 const SITEMAP_PATH = './public/sitemap.xml';
 const DOCS_JSON_PATH = './docs.json';
 const BLOG_DIR = './blog';
@@ -235,7 +235,7 @@ tags: ["tag1", "tag2", "tag3", "tag4", "tag5"]
 slug: "kebab-case-title"
 author: "FastApps Team"
 image: "/images/your-image.png"
-canonical: "https://www.fastapps.org/blog/your-slug"
+canonical: "https://docs.fastapps.org/blog/your-slug"
 ---
 \`\`\`
 

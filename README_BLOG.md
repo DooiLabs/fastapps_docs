@@ -52,7 +52,7 @@ tags: ["tag1", "tag2", "tag3", "tag4", "tag5"]
 slug: "kebab-case-title"
 author: "FastApps Team"
 image: "/images/your-image.png"
-canonical: "https://www.fastapps.org/blog/your-slug"
+canonical: "https://docs.fastapps.org/blog/your-slug"
 ---
 ```
 
@@ -278,22 +278,26 @@ If you encounter issues while writing a blog post:
 
 ## 📚 Current Blog Posts
 
-*Auto-generated list of current blog posts (October 24, 2025)*
+*Auto-generated list of current blog posts (November 4, 2025)*
 
 
 ### 📝 Published Posts (2 posts)
 
-1. **Inside The Chatgpt Apps Sdk How It Actually Works**
+1. **Inside the ChatGPT Apps SDK: How It Actually Works**
    - **URL**: `/blog/inside-the-chatgpt-apps-sdk-how-it-actually-works`
-   - **Date**: Oct 24, 2025
-   - **Author**: FastApps Team
+   - **Date**: Oct 23, 2025
+   - **Author**: Zach Park, Co-founder of Dooilabs
+   - **Tags**: Apps SDK, MCP, Technical Deep Dive
+   - **Description**: Dive deep into the technical architecture of the OpenAI Apps SDK, exploring MCP servers, widgets, and the window.openai bridge that powers ChatGPT apps.
 
-2. **What Are Apps In Chatgpt And Why They Are The Future Of Software**
+2. **What Are Apps in ChatGPT and Why They're the Future of Software**
    - **URL**: `/blog/what-are-apps-in-chatgpt-and-why-they-are-the-future-of-software`
-   - **Date**: Oct 24, 2025
-   - **Author**: FastApps Team
+   - **Date**: Oct 22, 2025
+   - **Author**: Zach Park, Co-founder of Dooilabs
+   - **Tags**: Apps in ChatGPT
+   - **Description**: Learn what Apps in ChatGPT are and how OpenAI's Apps SDK powers a new generation of conversational, AI-driven software.
 
 
 ---
 
-*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: October 24, 2025*
+*This guide is continuously updated to maintain the quality and consistency of the FastApps blog. Last updated: November 4, 2025*

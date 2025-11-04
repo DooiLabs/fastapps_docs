@@ -68,7 +68,7 @@
       "anchors": [
         {
           "anchor": "Website",
-          "href": "https://www.fastapps.org/",
+          "href": "https://docs.fastapps.org/",
           "icon": "globe"
         },
         {
@@ -124,7 +124,7 @@
       "twitter:creator": "@Dooilabs",
       "twitter:image": "/images/logo.png",
       "article:author": "FastApps Team",
-      "article:publisher": "https://fastapps.org",
+      "article:publisher": "https://docs.fastapps.org",
       "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     }
   },
