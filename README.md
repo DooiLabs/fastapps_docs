@@ -57,9 +57,9 @@ To contribute to the documentation:
 
 ## Links
 
-- [FastApps GitHub](https://github.com/fastapps)
+- [FastApps GitHub](https://github.com/DooiLabs/FastApps)
 - [FastApps PyPI Package](https://pypi.org/project/fastapps/)
-- [Community Discord](https://discord.gg/fastapps)
+- [Community Discord](https://discord.gg/x83WSGpg)
 
 ## License
 
