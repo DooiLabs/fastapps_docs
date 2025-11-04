@@ -8,10 +8,11 @@ description: "Spin up your first FastApps project and run a widget in under five
 Get started with FastApps in just 3 steps:
 
 ```bash
-# 0. Install using uv (recommended)
+# 0. Install using uv
 uv tool install fastapps
+uv tool install --upgrade fastapps # Update to the latest version
 
-# 1. Create project (includes example widget + auto npm install)
+# 1. Create project
 fastapps init my-app
 
 # 2. Run
@@ -19,9 +20,7 @@ cd my-app
 fastapps dev
 ```
 
-That's it! Your example widget is now running at a public URL.
-The public URL is temporary, and is issued with [cloudflared](https://github.com/cloudflare/cloudflared) behind the scenes.
-You can view your widget at `https://<your-subdomain>.trycloudflare.com/mcp` and add it to ChatGPT under "Settings \> Connectors".
+That's it! Your example widget is now running at a public URL. The public URL is temporary, and is issued with [cloudflared](https://github.com/cloudflare/cloudflared) behind the scenes. You can view your widget at `https://<your-subdomain>.trycloudflare.com/mcp` and add it to ChatGPT under "Settings \> Connectors".
 
 ---
 
