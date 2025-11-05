@@ -2,39 +2,52 @@
 title: "How ChatGPT apps work"
 description: "Understand how ChatGPT apps work, and how to build one with FastApps"
 ---
-<img src="/images/howappssdk.png" alt="How Apps SDK works" width="100%" />
+
+<img
+  src="/images/howappssdk.png"
+  alt="How Apps SDK works"
+  width="100%"
+/>
 
 ## How ChatGPT apps work
-
 
 At its core, a ChatGPT app is an MCP server that exposes multiple tools. Each tools return structured contents including a widget.
 
 Specifically, each tools include
+
 - Metadata : Description of the tool (so that the model could call the right tool at the right time), input schema, the message to be displayed before/after the tool is executed, etc.
 - Widgets : This is the component that is being displayed on the screen.
 
-
 ## Building ChatGPT apps
+
 With FastApps, you could simply use the prebuilt library to resgister tools and widgets.
 
 **Tools** (`server/tools/hello_tool.py`)
 
 ```python
-from fastapps import BaseWidget, Field
+from fastapps import BaseWidget, ConfigDict
 from pydantic import BaseModel
+from typing import Dict, Any
 
-class HelloInput(BaseModel):
-    name: str = Field(default="World", description="Name to greet")
 
-class HelloTool(BaseWidget):
+class MyWidgetInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+class MyWidgetTool(BaseWidget):
     identifier = "hello"
-    title = "Hello Widget"
-    input_schema = HelloInput
-    
-    async def execute(self, input_data: HelloInput):
+    title = "My Widget"
+    input_schema = MyWidgetInput
+    invoking = "Loading widget..."
+    invoked = "Widget ready!"
+
+    widget_csp = {
+        "connect_domains": [],
+        "resource_domains": []
+    }
+
+    async def execute(self, input_data: MyWidgetInput, context=None, user=None) -> Dict[str, Any]:
         return {
-            "message": f"Hello, {input_data.name}!",
-            "emoji": "👋"
+            "message": "Welcome to FastApps"
         }
 ```
 
@@ -42,11 +55,8 @@ class HelloTool(BaseWidget):
 
 ```jsx
 import React from 'react';
-import { useWidgetProps } from 'fastapps';
 
 export default function HelloWidget() {
-  const props = useWidgetProps();
-  
   return (
     <div>
       <h1>Hello world!</h1>
@@ -57,7 +67,7 @@ export default function HelloWidget() {
 
 ## What FastApps provide
 
-FastApps provides everything you need to build sophisticated ChatGPT apps:
+FastApps provide everything you need to build sophisticated ChatGPT apps:
 
 **Widget Registration**: Use the `BaseWidget` class to simply register it as an MCP tool. We handle the rest - no complex configuration or manual registration needed.
 
@@ -65,12 +75,8 @@ FastApps provides everything you need to build sophisticated ChatGPT apps:
 
 **Simple auth**: Authentication and other advanced features are all handled with our simple decorators. Just add `@auth_required` and you're done.
 
-
 ## Next Steps
-
 
 <Card title="Quick Start" icon="rocket" href="/quickstart/index">
   Get up and running with FastApps in minutes
 </Card>
-
-
