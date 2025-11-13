@@ -1,0 +1,79 @@
+---
+title: "Templates"
+description: "Create widgets quickly using pre-built templates"
+---
+
+## Create widget from a template
+
+FastApps provides several pre-built templates to help you get started quickly. Instead of creating a widget from scratch, you can use a template that includes common patterns and best practices.
+
+## Available Templates
+
+### List Template
+
+Create a vertical list widget with items:
+
+```bash
+uv run fastapps create my-list --template list
+```
+
+This template creates a widget that displays items in a vertical list format, perfect for displaying collections of data like tasks, products, or any list-based content.
+
+<div style={{ margin: '1rem 0' }}>
+  <img src="/images/template-list.png" alt="List Template" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }} />
+</div>
+
+### Carousel Template
+
+Create a horizontal scrolling cards widget:
+
+```bash
+uv run fastapps create my-carousel --template carousel
+```
+
+This template creates a widget with horizontal scrolling cards, ideal for showcasing multiple items in a compact, interactive format.
+
+<div style={{ margin: '1rem 0' }}>
+  <img src="/images/template-carousel.png" alt="Carousel Template" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }} />
+</div>
+
+### Albums Template
+
+Create a photo gallery viewer:
+
+```bash
+uv run fastapps create my-albums --template albums
+```
+
+This template creates a photo gallery widget that allows users to browse through images in an organized, visually appealing way.
+
+<div style={{ margin: '1rem 0' }}>
+  <img src="/images/template-album.png" alt="Albums Template" style={{ width: '100%', borderRadius: '8px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }} />
+</div>
+
+## What Gets Created
+
+When you use a template, FastApps generates:
+
+- `widgets/<widget-name>/index.jsx` - Pre-configured React component based on the template
+- `server/tools/<widget-name>_tool.py` - Python backend tool with example data structure
+
+## Customizing Templates
+
+After creating a widget from a template, you can:
+
+1. Modify the React component in `widgets/<widget-name>/index.jsx` to match your design needs
+2. Update the Python tool in `server/tools/<widget-name>_tool.py` to connect to your data source
+3. Add additional features and interactions as needed
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Widget Basics" icon="book" href="/widgets/basics/index">
+    Learn the fundamentals of widgets
+  </Card>
+  <Card title="React Hooks" icon="code" href="/widgets/react-hooks/index">
+    Master the hook system
+  </Card>
+</CardGroup>
+

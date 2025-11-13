@@ -31,6 +31,7 @@
             "pages": [
               "widgets/index",
               "widgets/basics/index",
+              "widgets/templates/index",
               "widgets/react-hooks/index"
             ]
           },
